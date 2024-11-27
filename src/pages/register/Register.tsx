@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { InputValueProp } from "../../types/books/user.type";
 import { useAuth } from "../../context/UserContext";
+// import './Register.css';
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors }, reset, } = useForm<InputValueProp>();
@@ -25,7 +26,9 @@ const Register = () => {
                 <div className="form-container">
                     <div className="container">
                         <form onSubmit={handleSubmit(onSubmit)} className="form">
-                            <div className="form-header"></div>
+                            <div className="form-header">
+                                <div className="form-title">Register</div>
+                            </div>
                             <div className="form-body">
                                 <input
                                     className="form-input"
@@ -35,11 +38,7 @@ const Register = () => {
                                 />
                                 {errors.username && (
                                     <span
-                                        style={{
-                                            color: "red",
-                                            padding: "22px 0",
-                                            fontWeight: "bold",
-                                        }}
+                                    className="span-error-message"
                                     >
                                         This field is required
                                     </span>
@@ -53,11 +52,7 @@ const Register = () => {
                                 />
                                 {errors.email && (
                                     <span
-                                        style={{
-                                            color: "red",
-                                            padding: "22px 0",
-                                            fontWeight: "bold",
-                                        }}
+                                    className="span-error-message"
                                     >
                                         This field is required
                                     </span>
@@ -71,11 +66,7 @@ const Register = () => {
                                 />
                                 {errors.password && (
                                     <span
-                                        style={{
-                                            color: "red",
-                                            padding: "22px 0",
-                                            fontWeight: "bold",
-                                        }}
+                                    className="span-error-message"
                                     >
                                         This field is required
                                     </span>

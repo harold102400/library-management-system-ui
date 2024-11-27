@@ -1,73 +1,69 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-// import Swal from "sweetalert2";
+import { useEffect, useState } from "react";
 import "./Login.css";
 import { UserPropType } from "../../types/books/user.type";
 import { useAuth } from "../../context/UserContext";
+import { handlError } from "../../components/ErrorAlert/ErrorAlert";
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors }, reset,} = useForm<UserPropType>();
     const {onLogin, authState: { authenticated }} = useAuth();
+    const [loadingData, setLoadingData] = useState<boolean>(false);
 
-    // const mySwal = Swal;
     const navigate = useNavigate();
     useEffect(() => {
+       setTimeout(() => {
         if (authenticated) {
             navigate("/books");
         }
+       }, 1500)
     }, [ authenticated]);
-
-    // function handleError(message: string) {
-    //     return mySwal.fire({
-    //         icon: "error",
-    //         title: "Oops...",
-    //         text: message.replace(/<[^>]*>/g, ""),
-    //         confirmButtonColor: "#000",
-    //         confirmButtonText: "Okay!",
-    //     });
-    // }
-
 
     async function onSubmit(data: UserPropType) {
         try {
+            setLoadingData(true);
             const email_or_username = data.inputValue ?? "";
             const password = data.password ?? "";
 
             const loginInput = (email_or_username) ? { email: email_or_username, password } : { username: email_or_username, password };
             await onLogin(loginInput.email ?? loginInput.username, password);
         } catch (error: any) {
-            console.log(error?.response?.data?.message);
-            console.error(error?.response?.data?.message)
-            // handleError(error?.response.data?.message);
+            handlError(error?.response.data?.message);
+        }
+        finally{
+            setLoadingData(false);
         }
     }
-    return (
-        <>
-            <div className="container-login">
+    return loadingData ? (
+        <LoadingSpinner />
+    ) : (
+        <div className="container-login">
                 <div className="form-container">
                     <div className="container">
                         <form onSubmit={handleSubmit(onSubmit)} className="form">
-                            <div className="form-header"></div>
+                            <div className="form-header">
+                                <div className="form-title">Log in</div>
+                                <p className="new-account-text">Need an account? <a href="/register">Create an account</a></p>
+                            </div>
                             <div className="form-body">
+                                <label htmlFor="username" className="form-label">Username or email</label>
                                 <input
                                     className="form-input"
                                     type="text"
-                                    placeholder="E.g., username"
+                                    placeholder="E.g., username or email"
                                     {...register("inputValue", { required: true })}
                                 />
                                 {errors.inputValue && (
                                     <span
-                                        style={{
-                                            color: "red",
-                                            padding: "22px 0",
-                                            fontWeight: "bold",
-                                        }}
+                                        className="span-error-message"
                                     >
                                         This field is required
                                     </span>
                                 )}
 
+                                <label htmlFor="password" className="form-label">Password</label>
                                 <input
                                     className="form-input"
                                     type="pass"
@@ -76,11 +72,7 @@ const Login = () => {
                                 />
                                 {errors.password && (
                                     <span
-                                        style={{
-                                            color: "red",
-                                            padding: "22px 0",
-                                            fontWeight: "bold",
-                                        }}
+                                    className="span-error-message"
                                     >
                                         This field is required
                                     </span>
@@ -94,8 +86,7 @@ const Login = () => {
                     </div>
                 </div>
             </div>
-        </>
-    );
+    )
 };
 
 export default Login;
