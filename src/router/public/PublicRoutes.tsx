@@ -3,7 +3,7 @@ import { PrivateGuard } from '../guard/PrivateGuard';
 import { PrivateRoutes } from '../private/PrivateRoutes';
 import { RoutesWithNotFound } from '../notfound/RoutesWithNotFound';
 import  Login  from '../../pages/login/Login';
-import { Register } from '../../pages/register/Register';
+import  Register  from '../../pages/register/Register';
 
 
 

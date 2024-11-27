@@ -58,7 +58,7 @@ export async function registerUser(username: string, email: string, password: st
             email,
             password
         })
-        if (res.status == 200) {
+        if (res.status == 201) {
             console.log('usuario registrado');
         }
     } catch (error) {
