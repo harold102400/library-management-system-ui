@@ -1,18 +1,38 @@
 import { useEffect, useState } from "react";
-import { getAllBooks } from "../../services/apiFunctions";
-import { ApiResponseProp, BookPropType } from "../../types/books/book.type";
+import { BookPropType } from "../../types/books/book.type";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { useLibrary } from "../../context/LibraryContext";
 import "./BookTable.css";
+import { VerticallyCenteredModal } from "../../components/VerticallyCenteredModal/VerticallyCenteredModal";
 
 export default function BookTable() {
 
 
   const [books, setBooks] = useState<BookPropType[] | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [modalShow, setModalShow] = useState(false);
+  const { getBooksFromDb } = useLibrary()
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
+
+  const getBooks = async (searchTerm: string) => {
+    const res = await getBooksFromDb(searchTerm);
+    setBooks(res.data);
+  }
+
+  const triggerEditModal = (book: BookPropType) => {
+    console.log(book)
+    setModalShow(true)
+  }
+
+ useEffect(() => {
+  const debounce = setTimeout(() => {
+    getBooks(searchTerm);
+  }, 300); 
+  return () => clearTimeout(debounce);
+}, [searchTerm]); 
 
   return (
     <div className="table_container">
@@ -38,20 +58,25 @@ export default function BookTable() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th></th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-              <button className="btn-edit">
-                <FaEdit />
-              </button>
-              <button className="btn-delete">
-                <FaTrash />
-              </button>
-            </td>
-          </tr>
+          {
+            books?.map((book) => (
+              <tr key={book.id}>
+                <th>{book.id}</th>
+                <td>{book.title}</td>
+                <td>{book.author}</td>
+                <td>{book.year}</td>
+                <td>
+                <VerticallyCenteredModal show={modalShow} onHide={() => setModalShow(false)}/>
+                  <button className="btn-edit" onClick={() => triggerEditModal(book)}>
+                    <FaEdit />
+                  </button>
+                  <button className="btn-delete">
+                    <FaTrash />
+                  </button>
+                </td>
+              </tr>
+            ))
+          }
         </tbody>
       </table>
 
