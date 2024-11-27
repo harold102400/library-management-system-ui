@@ -8,18 +8,19 @@ import { handlError } from "../../components/ErrorAlert/ErrorAlert";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 
 const Login = () => {
-    const { register, handleSubmit, formState: { errors }, reset,} = useForm<UserPropType>();
+    const { register, handleSubmit, formState: { errors }} = useForm<UserPropType>();
     const {onLogin, authState: { authenticated }} = useAuth();
     const [loadingData, setLoadingData] = useState<boolean>(false);
 
     const navigate = useNavigate();
     useEffect(() => {
-       setTimeout(() => {
-        if (authenticated) {
-            navigate("/books");
-        }
-       }, 1500)
-    }, [ authenticated]);
+        setTimeout(() => {
+            if (authenticated) {
+                navigate("/books");
+            }
+     }, 2000)
+       
+    }, [ navigate, authenticated]);
 
     async function onSubmit(data: UserPropType) {
         try {
@@ -30,10 +31,13 @@ const Login = () => {
             const loginInput = (email_or_username) ? { email: email_or_username, password } : { username: email_or_username, password };
             await onLogin(loginInput.email ?? loginInput.username, password);
         } catch (error: any) {
-            handlError(error?.response.data?.message);
+            console.log(error)
+            handlError(error?.message);
         }
         finally{
-            setLoadingData(false);
+            setTimeout(() => {
+                setLoadingData(false);
+            }, 5000)
         }
     }
     return loadingData ? (

@@ -1,13 +1,12 @@
 import axios from "axios";
-import { BookPropType, Response } from "../types/books/book.type";
+import { BookPropType, ApiResponseProp } from "../types/books/book.type";
 
 
 const API_URL = import.meta.env.VITE_API_URL
 
-export async function getAllBooks(): Promise<Response<BookPropType>> {
+export async function getAllBooks(): Promise<ApiResponseProp<BookPropType[]>> {
     try {
         const res = await axios.get(`${API_URL}/books`);
-        console.log(res);
         return res.data
     } catch (error) {
         return Promise.reject(error);

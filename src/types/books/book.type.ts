@@ -1,4 +1,4 @@
-export type Response<T> = {
+export type ApiResponseProp<T> = {
     data: T
     limit: number;
     page: number;

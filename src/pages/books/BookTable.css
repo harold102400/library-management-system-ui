@@ -1,0 +1,140 @@
+.table_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+    background-color: #f7f7f7;
+    padding: 10px; 
+    flex-direction: column;
+}
+
+.table {
+    width: 100%;
+    max-width: 1000px;
+    border-collapse: collapse; 
+    background-color: #ffffff; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    overflow-x: auto;
+}
+
+.table-dark {
+    background-color: #f1f1f1;
+}
+
+th,
+td {
+    padding: 15px 20px !important; 
+    text-align: center; 
+    vertical-align: middle; 
+    border-bottom: 1px solid #ddd;
+    font-size: 1rem; 
+}
+
+th {
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+
+td {
+    font-size: 1.2rem;
+}
+
+tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+
+@media (max-width: 768px) {
+    .table {
+        width: 100%;
+    }
+    th,
+    td {
+        font-size: 0.9rem !important;
+        padding: 10px 12px !important;
+    }
+    th {
+        font-size: 1.2rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .table {
+        width: 100%;
+    }
+    th,
+    td {
+        font-size: 0.8rem !important;
+        padding: 8px 10px !important; 
+    }
+    th {
+        font-size: 1rem !important; 
+    }
+}
+
+@media (max-width: 320px) {
+    .table {
+        width: 100%;
+    }
+    th,
+    td {
+        font-size: 0.7rem !important; 
+        padding: 6px 8px !important;
+    }
+    th {
+        font-size: 0.9rem !important;
+    }
+}
+
+button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 8px 12px;
+    font-size: 1.2rem;
+    transition: transform 0.2s ease;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+.btn-edit {
+    color: #007bff; 
+}
+
+.btn-edit:hover {
+    color: #0056b3; 
+}
+
+.btn-delete {
+    color: #dc3545;
+}
+
+.btn-delete:hover {
+    color: #a71d2a;
+}
+
+
+.search-container {
+    margin-bottom: 20px; 
+    text-align: right;
+    max-width: 1000px;
+    width: 100%;
+  }
+  
+  .search-input {
+    /* width: 100%;
+    max-width: 400px; */
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+  }
+  
+  .search-input:focus {
+    border-color: #007bff; 
+  }
+  
