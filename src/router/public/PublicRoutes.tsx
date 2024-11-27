@@ -2,14 +2,14 @@ import { Route, Navigate } from 'react-router-dom';
 import { PrivateGuard } from '../guard/PrivateGuard';
 import { PrivateRoutes } from '../private/PrivateRoutes';
 import { RoutesWithNotFound } from '../notfound/RoutesWithNotFound';
-import { Login } from '../../pages/login/Login';
+import  Login  from '../../pages/login/Login';
 import { Register } from '../../pages/register/Register';
 
 
 
 export const PublicRoutes = () => {
 
-    const username = localStorage.getItem("username");
+    const username = localStorage.getItem("userDisplayName");
 
     return (
             <RoutesWithNotFound>

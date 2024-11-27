@@ -1,8 +1,6 @@
 export type UserPropType = {
     id: string;
-    username: string;
-    email: string;
+    inputValue: string;
     password: string;
     createdAt: string;
 }
-

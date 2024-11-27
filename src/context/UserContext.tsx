@@ -13,7 +13,7 @@ const API_URL = import.meta.env.VITE_API_URL
 
 
 export type UserContextValue = {
-    onLogin: (username: string, password: string) => Promise<void>;
+    onLogin: (input: string, password: string) => Promise<void>;
     onLogout: () => void;
     registerNewUser: (username: string, email: string, password: string) => Promise<void>;
     authState: {
@@ -58,11 +58,13 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
         loadToken();
     }, []);
 
-    const login = async (username: string, password: string): Promise<void> => {
-        const { data: response } = await axios.post(`${API_URL}/auth`, {
-            username: username,
-            password: password,
-        });
+    const login = async (input: string, password: string): Promise<void> => {
+
+        const isEmail = /\S+@\S+\.\S+/.test(input);
+
+        const loginData = isEmail ? { email: input, password } : { username: input, password }
+
+        const { data: response } = await axios.post(`${API_URL}/auth`, loginData);
 
         console.log(response);
 
