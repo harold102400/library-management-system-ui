@@ -7,20 +7,13 @@ import { VerticallyCenteredModal } from "../../components/VerticallyCenteredModa
 
 export default function BookTable() {
 
-
-  const [books, setBooks] = useState<BookPropType[] | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [modalShow, setModalShow] = useState(false);
-  const { getBooksFromDb } = useLibrary()
+  const { getBooksFromDb, books } = useLibrary()
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
-
-  const getBooks = async (searchTerm: string) => {
-    const res = await getBooksFromDb(searchTerm);
-    setBooks(res.data);
-  }
 
   const triggerEditModal = (book: BookPropType) => {
     console.log(book)
@@ -29,7 +22,7 @@ export default function BookTable() {
 
  useEffect(() => {
   const debounce = setTimeout(() => {
-    getBooks(searchTerm);
+    getBooksFromDb(searchTerm);
   }, 300); 
   return () => clearTimeout(debounce);
 }, [searchTerm]); 

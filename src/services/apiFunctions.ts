@@ -13,7 +13,7 @@ export async function getAllBooks(searchTerm: string = ""): Promise<ApiResponseP
     }
 }
 
-export async function createProduct(data: BookPropType) : Promise<void>
+export async function createBook(data: BookPropType) : Promise<void>
 {
     try {
         const res = await axios(`${API_URL}/books`, {data});
@@ -25,7 +25,7 @@ export async function createProduct(data: BookPropType) : Promise<void>
     }
 }
 
-export async function editProduct(data: BookPropType, id: number) : Promise<void>
+export async function editBook(data: BookPropType, id: number) : Promise<void>
 {
     try {
         const res = await axios.put(`${API_URL}/books/${id}`, {data});
@@ -37,7 +37,7 @@ export async function editProduct(data: BookPropType, id: number) : Promise<void
     }
 }
 
-export async function deleteProduct(id: number) : Promise<void>
+export async function deleteBook(id: number) : Promise<void>
 {
     try {
         const res = await axios.delete(`${API_URL}/books/${id}`);
