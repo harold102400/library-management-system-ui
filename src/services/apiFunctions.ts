@@ -2,6 +2,10 @@ import axios from "axios";
 import { BookPropType, ApiResponseProp } from "../types/books/book.type";
 
 
+const TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY;
+const token = localStorage.getItem(TOKEN_KEY)
+// console.log(token)
+
 const API_URL = import.meta.env.VITE_API_URL
 
 export async function getAllBooks(searchTerm: string = ""): Promise<ApiResponseProp<BookPropType[]>> {
@@ -25,8 +29,8 @@ export async function getBook(id: number): Promise<BookPropType> {
 export async function createBook(data: BookPropType) : Promise<void>
 {
     try {
-        const res = await axios(`${API_URL}/books`, {data});
-        if (res.status == 200) {
+        const res = await axios.post(`${API_URL}/books`, data);
+        if (res.status == 201) {
             console.log('Libro creado');
         }
     } catch (error) {
@@ -37,7 +41,13 @@ export async function createBook(data: BookPropType) : Promise<void>
 export async function editBook(data: BookPropType, id: number) : Promise<void>
 {
     try {
-        const res = await axios.put(`${API_URL}/books/${id}`, {data});
+        const res = await axios.put(`${API_URL}/books/${id}`, data, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            }
+        });
+        console.log(res)
         if (res.status == 200) {
             console.log('Libro editado');
         }
@@ -49,7 +59,12 @@ export async function editBook(data: BookPropType, id: number) : Promise<void>
 export async function deleteBook(id: number) : Promise<void>
 {
     try {
-        const res = await axios.delete(`${API_URL}/books/${id}`);
+        const res = await axios.delete(`${API_URL}/books/${id}`,{
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            }
+        });
         if (res.status == 200) {
             console.log('Libro eliminado');
         }

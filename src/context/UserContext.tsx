@@ -19,6 +19,7 @@ export type UserContextValue = {
     authState: {
         token: string | null;
         authenticated: boolean | null;
+        user_id: string | null;
     };
 };
 
@@ -30,6 +31,7 @@ export const UserContext = createContext<UserContextValue>({
     authState: {
         token: null,
         authenticated: null,
+        user_id: null
     },
 });
 
@@ -37,21 +39,25 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
     const [authState, setAuthState] = useState<UserContextValue["authState"]>({
         token: null,
         authenticated: null,
+        user_id: null
     });
 
     useEffect(() => {
         const loadToken = () => {
             const token = localStorage.getItem(TOKEN_KEY);
+            const user_id = localStorage.getItem("user_id");
             if (token) {
                 setAuthState({
                     token,
                     authenticated: true,
+                    user_id,
                 });
                 axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             } else {
                 setAuthState({
                     token: null,
                     authenticated: false,
+                    user_id: null
                 });
             }
         };
@@ -71,10 +77,12 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
         setAuthState({
             token: response.token,
             authenticated: true,
+            user_id: response.user_id,
         });
 
         axios.defaults.headers.post["Authorization"] = `Bearer ${response.token}`;
         localStorage.setItem(TOKEN_KEY, response.token);
+        localStorage.setItem("user_id", response.user_id);
         localStorage.setItem("userDisplayName", response.display_name);
 
         return response;
@@ -82,10 +90,13 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 
     const logout = () => {
         localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem("user_id");
+        localStorage.removeItem("userDisplayName");
         axios.defaults.headers.common["Authorization"] = "";
         setAuthState({
             token: null,
             authenticated: false,
+            user_id: null,
         });
     };
 

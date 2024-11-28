@@ -31,8 +31,8 @@ const Login = () => {
             const loginInput = (email_or_username) ? { email: email_or_username, password } : { username: email_or_username, password };
             await onLogin(loginInput.email ?? loginInput.username, password);
         } catch (error: any) {
-            console.log(error)
-            handlError(error?.message);
+            console.log(error?.response?.data?.message)
+            handlError(error?.response?.data?.message);
         }
         finally{
             setTimeout(() => {
@@ -49,7 +49,7 @@ const Login = () => {
                         <form onSubmit={handleSubmit(onSubmit)} className="form">
                             <div className="form-header">
                                 <div className="form-title">Log in</div>
-                                <p className="new-account-text">Need an account? <a href="/register">Create an account</a></p>
+                                <p className="new-account-text">Need an account? <a href="/register" className="new-link-text">Create an account</a></p>
                             </div>
                             <div className="form-body">
                                 <label htmlFor="username" className="form-label">Username or email</label>
@@ -70,7 +70,7 @@ const Login = () => {
                                 <label htmlFor="password" className="form-label">Password</label>
                                 <input
                                     className="form-input"
-                                    type="pass"
+                                    type="password"
                                     placeholder="E.g., •••••••••••••"
                                     {...register("password", { required: true })}
                                 />

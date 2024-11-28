@@ -2,7 +2,6 @@ import {
     createContext,
     PropsWithChildren,
     useContext,
-    useEffect,
     useState,
 } from "react";
 import { deleteBook, editBook, getAllBooks, getBook } from "../services/apiFunctions";
@@ -10,7 +9,8 @@ import { ApiResponseProp, BookPropType } from "../types/books/book.type";
 
 
 export type LibraryContextValue = {
-    books: BookPropType[] | null;
+    books: BookPropType[];
+    book: BookPropType | null;
     getBooksFromDb: (searchTerm: string) => Promise<ApiResponseProp<BookPropType[]>>;
     edit: (data: BookPropType, id: number) => Promise<void>;
     getOneBook: (id: number) => Promise<BookPropType>
@@ -18,19 +18,12 @@ export type LibraryContextValue = {
 };
 
 
-export const LibraryContext = createContext<LibraryContextValue>({
-    books: null,
-    getBooksFromDb: async () => {
-        throw new Error("getBooksFromDb must be called within a LibraryProvider");
-    },
-    edit: async () => {},
-    getOneBook: async () => {throw new Error("getOneBook must be called within a LibraryProvider");},
-    deleteBookById: async () => {}
-});
+export const LibraryContext = createContext<LibraryContextValue | null>(null);
 
 export const LibraryProvider = ({ children }: PropsWithChildren) => {
 
-    const [books, setBooks] = useState<BookPropType[] | null>(null);
+    const [books, setBooks] = useState<BookPropType[]>([]);
+    const [book, setBook] = useState<BookPropType | null>(null)
 
     const getBooksFromDb = async (searchTerm: string): Promise<ApiResponseProp<BookPropType[]>> => {
         try {
@@ -44,6 +37,7 @@ export const LibraryProvider = ({ children }: PropsWithChildren) => {
 
     const getOneBook = async (id: number): Promise<BookPropType> =>{
         const response = await getBook(id)
+        setBook(response)
         return response;
     } 
 
@@ -57,6 +51,7 @@ export const LibraryProvider = ({ children }: PropsWithChildren) => {
   
     const value: LibraryContextValue = {
         books,
+        book,
         getBooksFromDb,
         edit,
         getOneBook,

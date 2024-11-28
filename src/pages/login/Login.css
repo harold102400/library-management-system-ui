@@ -16,7 +16,7 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
-  margin: -8px;
+  margin: 0px;
   background-image: url("../../assets/morning-scenery-wallpaper-2560x1600_7.jpg");
   background-repeat: no-repeat;
   background-size: cover;
@@ -128,7 +128,7 @@
   font-weight: bold;
 }
 
-.new-account-text {
+.new-account-text, .new-link-text {
   padding: 0;
   margin: 10px 0;
   font-size: 0.8rem;

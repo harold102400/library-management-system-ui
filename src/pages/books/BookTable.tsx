@@ -3,9 +3,9 @@ import { BookPropType } from "../../types/books/book.type";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { FaCircleInfo } from "react-icons/fa6";
 import { useLibrary } from "../../context/LibraryContext";
-import "./BookTable.css";
 import { VerticallyCenteredModal } from "../../components/VerticallyCenteredModal/VerticallyCenteredModal";
 import { Link } from "react-router-dom";
+import "./BookTable.css";
 
 export default function BookTable() {
 
@@ -25,19 +25,18 @@ export default function BookTable() {
       setBookToDelete(null); 
     }
   };
-
-
+  
   useEffect(() => {
     const debounce = setTimeout(() => {
       getBooksFromDb(searchTerm);
     }, 300);
     return () => clearTimeout(debounce);
-  }, [searchTerm, books]);
+  }, [searchTerm]);
 
   return (
     <div className="table_container">
-
       <div className="search-container">
+        <Link to={"/create"} className="btn-create">Create new book</Link>
         <input
           type="text"
           className="search-input"
@@ -70,11 +69,11 @@ export default function BookTable() {
                     show={modalShow}
                     onHide={() => setModalShow(false)}
                     onConfirm={confirmDelete}
-                    message="¿Estás seguro de que quieres eliminar este libro?"
+                    message="Are you sure you want to delete this book?"
                   />
-                  <button className="btn-edit" >
+                    <Link to={`/edit/${book.id}`} className="btn-edit">
                     <FaEdit />
-                  </button>
+                    </Link>
                   <button className="btn-delete" onClick={() => {
                     setBookToDelete(book);
                     setModalShow(true);
