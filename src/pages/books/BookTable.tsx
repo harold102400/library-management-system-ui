@@ -6,6 +6,7 @@ import { useLibrary } from "../../context/LibraryContext";
 import { VerticallyCenteredModal } from "../../components/VerticallyCenteredModal/VerticallyCenteredModal";
 import { Link } from "react-router-dom";
 import "./BookTable.css";
+import { handlError } from "../../components/ErrorAlert/ErrorAlert";
 
 export default function BookTable() {
 
@@ -19,11 +20,15 @@ export default function BookTable() {
   };
 
   const confirmDelete = async () => {
+   try {
     if (bookToDelete) {
       await deleteBookById(Number(bookToDelete.id));
       setModalShow(false);  
       setBookToDelete(null); 
     }
+   } catch (error: any) {
+    handlError(error?.response?.data?.message)
+   }
   };
   
   useEffect(() => {

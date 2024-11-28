@@ -20,6 +20,7 @@ export type UserContextValue = {
         token: string | null;
         authenticated: boolean | null;
         user_id: string | null;
+        username: string | null;
     };
 };
 
@@ -31,7 +32,8 @@ export const UserContext = createContext<UserContextValue>({
     authState: {
         token: null,
         authenticated: null,
-        user_id: null
+        user_id: null,
+        username: null,
     },
 });
 
@@ -39,25 +41,29 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
     const [authState, setAuthState] = useState<UserContextValue["authState"]>({
         token: null,
         authenticated: null,
-        user_id: null
+        user_id: null,
+        username: null,
     });
 
     useEffect(() => {
         const loadToken = () => {
             const token = localStorage.getItem(TOKEN_KEY);
             const user_id = localStorage.getItem("user_id");
+            const username = localStorage.getItem("userDisplayName");
             if (token) {
                 setAuthState({
                     token,
                     authenticated: true,
                     user_id,
+                    username,
                 });
                 axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             } else {
                 setAuthState({
                     token: null,
                     authenticated: false,
-                    user_id: null
+                    user_id: null,
+                    username: null,
                 });
             }
         };
@@ -78,6 +84,7 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
             token: response.token,
             authenticated: true,
             user_id: response.user_id,
+            username: response.username,
         });
 
         axios.defaults.headers.post["Authorization"] = `Bearer ${response.token}`;
@@ -97,6 +104,7 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
             token: null,
             authenticated: false,
             user_id: null,
+            username: null,
         });
     };
 

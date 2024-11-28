@@ -19,7 +19,7 @@ export function VerticallyCenteredModal({ show, onHide, onConfirm, message }: Mo
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Confirmación
+          Confirmation
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -27,10 +27,10 @@ export function VerticallyCenteredModal({ show, onHide, onConfirm, message }: Mo
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
-          Cancelar
+          Cancel
         </Button>
         <Button variant="danger" onClick={onConfirm}>
-          Eliminar
+          Delete
         </Button>
       </Modal.Footer>
     </Modal>
