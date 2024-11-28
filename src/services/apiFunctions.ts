@@ -13,6 +13,15 @@ export async function getAllBooks(searchTerm: string = ""): Promise<ApiResponseP
     }
 }
 
+export async function getBook(id: number): Promise<BookPropType> {
+    try {
+        const res = await axios.get(`${API_URL}/books/${id}`);
+        return res.data
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+
 export async function createBook(data: BookPropType) : Promise<void>
 {
     try {

@@ -87,7 +87,7 @@ tbody tr:hover {
     }
 }
 
-button {
+button, a {
     border: none;
     background-color: transparent;
     cursor: pointer;
@@ -115,6 +115,15 @@ button:hover {
 .btn-delete:hover {
     color: #a71d2a;
 }
+
+.btn-info {
+    color: #19ba5c;
+}
+
+.btn-info:hover {
+    color: #0b572b;
+}
+
 
 
 .search-container {

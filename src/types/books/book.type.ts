@@ -11,7 +11,7 @@ export type BookPropType = {
     author: string;
     year: number;
     genre: string[];
-    isFavorite: boolean;
+    isFavorite: number;
     user_id: string;
     createdAt: string;
     updatedAt: string;

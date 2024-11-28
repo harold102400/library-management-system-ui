@@ -1,31 +1,38 @@
 import { useEffect, useState } from "react";
 import { BookPropType } from "../../types/books/book.type";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaCircleInfo } from "react-icons/fa6";
 import { useLibrary } from "../../context/LibraryContext";
 import "./BookTable.css";
 import { VerticallyCenteredModal } from "../../components/VerticallyCenteredModal/VerticallyCenteredModal";
+import { Link } from "react-router-dom";
 
 export default function BookTable() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [modalShow, setModalShow] = useState(false);
-  const { getBooksFromDb, books } = useLibrary()
+  const [bookToDelete, setBookToDelete] = useState<BookPropType | null>(null);
+  const { getBooksFromDb, books, deleteBookById } = useLibrary()
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  const triggerEditModal = (book: BookPropType) => {
-    console.log(book)
-    setModalShow(true)
-  }
+  const confirmDelete = async () => {
+    if (bookToDelete) {
+      await deleteBookById(Number(bookToDelete.id));
+      setModalShow(false);  
+      setBookToDelete(null); 
+    }
+  };
 
- useEffect(() => {
-  const debounce = setTimeout(() => {
-    getBooksFromDb(searchTerm);
-  }, 300); 
-  return () => clearTimeout(debounce);
-}, [searchTerm]); 
+
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      getBooksFromDb(searchTerm);
+    }, 300);
+    return () => clearTimeout(debounce);
+  }, [searchTerm, books]);
 
   return (
     <div className="table_container">
@@ -59,13 +66,26 @@ export default function BookTable() {
                 <td>{book.author}</td>
                 <td>{book.year}</td>
                 <td>
-                <VerticallyCenteredModal show={modalShow} onHide={() => setModalShow(false)}/>
-                  <button className="btn-edit" onClick={() => triggerEditModal(book)}>
+                  <VerticallyCenteredModal
+                    show={modalShow}
+                    onHide={() => setModalShow(false)}
+                    onConfirm={confirmDelete}
+                    message="¿Estás seguro de que quieres eliminar este libro?"
+                  />
+                  <button className="btn-edit" >
                     <FaEdit />
                   </button>
-                  <button className="btn-delete">
+                  <button className="btn-delete" onClick={() => {
+                    setBookToDelete(book);
+                    setModalShow(true);
+                  }}>
                     <FaTrash />
                   </button>
+
+                  <Link to={`/detail/${book.id}`} className="btn-info">
+                    <FaCircleInfo />
+                  </Link>
+
                 </td>
               </tr>
             ))

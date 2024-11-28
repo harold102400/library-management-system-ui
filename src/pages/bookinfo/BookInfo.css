@@ -1,0 +1,23 @@
+.book-info {
+    margin: 0  auto;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    max-width: 800px;
+    padding: 50px;
+}
+.button_container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.book_title {
+    font-size: 1.4rem;
+}
+
+.button_title {
+    font-size: 2rem;
+    margin-top: 25px;
+    margin-bottom: 12px;
+    font-weight: bold;
+}
+
