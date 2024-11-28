@@ -9,7 +9,7 @@ export type BookPropType = {
     id: string;
     title: string;
     author: string;
-    year: number;
+    year: string;
     genre: string[];
     isFavorite: number;
     user_id: string;
