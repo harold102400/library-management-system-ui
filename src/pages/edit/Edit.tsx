@@ -43,8 +43,10 @@ export const Edit = () => {
 
   const submitForm = async (data: BookPropType) => {
     try {
+      const genresArray = Array.isArray(data.genre) ? data.genre : [data.genre];
       const newData = {
         ...data,
+        genre: genresArray,
         user_id: String(userId),
       };
       await edit(newData, parsedBookId);
