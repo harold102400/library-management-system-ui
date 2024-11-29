@@ -57,13 +57,21 @@ const Login = () => {
                                     className="form-input"
                                     type="text"
                                     placeholder="E.g., username or email"
-                                    {...register("inputValue", { required: true })}
+                                    {...register("inputValue", { 
+                                        required:  "This field is required and cannot be empty",
+                                        setValueAs: (value) => value.trim(),
+                                        pattern: {
+                                            value: /^[A-Za-zÀ-ÿ0-9\s.@]+$/,
+                                            message: "Title must contain only letters and spaces",
+                                          },
+
+                                     })}
                                 />
                                 {errors.inputValue && (
                                     <span
                                         className="span-error-message"
                                     >
-                                        This field is required
+                                        {errors.inputValue.message}
                                     </span>
                                 )}
 
@@ -72,13 +80,20 @@ const Login = () => {
                                     className="form-input"
                                     type="password"
                                     placeholder="E.g., •••••••••••••"
-                                    {...register("password", { required: true })}
+                                    {...register("password", { 
+                                        required:  "This field is required and cannot be empty",
+                                        setValueAs: (value) => value.trim(),
+                                        pattern: {
+                                            value: /^[A-Za-zÀ-ÿ0-9\s.@]+$/,
+                                            message: "Title must contain only letters and spaces",
+                                          },
+                                    })}
                                 />
                                 {errors.password && (
                                     <span
                                     className="span-error-message"
                                     >
-                                        This field is required
+                                        {errors.password.message}
                                     </span>
                                 )}
 

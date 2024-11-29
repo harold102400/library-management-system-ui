@@ -4,7 +4,8 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { FaCircleInfo } from "react-icons/fa6";
 import { useLibrary } from "../../context/LibraryContext";
 import { VerticallyCenteredModal } from "../../components/VerticallyCenteredModal/VerticallyCenteredModal";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams} from "react-router-dom";
+import ReactPaginate from "react-paginate";
 import "./BookTable.css";
 import { handlError } from "../../components/ErrorAlert/ErrorAlert";
 
@@ -14,9 +15,39 @@ export default function BookTable() {
   const [modalShow, setModalShow] = useState(false);
   const [bookToDelete, setBookToDelete] = useState<BookPropType | null>(null);
   const { getBooksFromDb, books, deleteBookById } = useLibrary()
+  
+
+  const [pageCount, setPageCount] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams({
+    page: "1",
+    limit: "5",
+  });
+
+  const changePage = ({ selected }: { selected: number }) => {
+    const page = selected + 1; // páginas empiezan desde 0 en ReactPaginate
+    setSearchParams({ page: String(page), limit: "5" });
+    getPaginatedProducts(page, 5);
+  };
+  
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
+  };
+
+  
+  const getPaginatedProducts = async (page: number, limit: number, searchProduct: string = "") => {
+    try {
+      const allBooks = await getBooksFromDb(page, limit, searchProduct);
+      setPageCount(Math.ceil(allBooks.totalCount / allBooks.limit));
+      setSearchParams({
+        page: String(allBooks.page),
+        limit: String(allBooks.limit),
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        // handleError(error.message);
+      }
+    } 
   };
 
   const confirmDelete = async () => {
@@ -31,18 +62,33 @@ export default function BookTable() {
     handlError(error?.response?.data?.message)
    }
   };
+
+  useEffect(() => {
+    const page = Number(searchParams.get("page")) || 1;
+    const limit = Number(searchParams.get("limit")) || 5;
+    getPaginatedProducts(page, limit);
+  }, [searchParams]);
+  
+
   
   useEffect(() => {
     const debounce = setTimeout(() => {
-      getBooksFromDb(searchTerm);
+      const page = Number(searchParams.get("page")) || 1;
+      const limit = Number(searchParams.get("limit")) || 5;
+      getPaginatedProducts(page, limit, searchTerm);
     }, 300);
     return () => clearTimeout(debounce);
-  }, [searchTerm]);
+  }, [searchTerm, searchParams]);  // Dependencias corregidas
+  
+
+  console.log(books)
 
   return (
     <div className="table_container">
       <div className="search-container">
-        <Link to={"/create"} className="btn-create">Create new book</Link>
+        <Link to={"/create"} className="btn-create">
+          Create new book
+        </Link>
         <input
           type="text"
           className="search-input"
@@ -63,41 +109,51 @@ export default function BookTable() {
           </tr>
         </thead>
         <tbody>
-          {
-            books?.map((book) => (
-              <tr key={book.id}>
-                <th>{book.id}</th>
-                <td>{book.title}</td>
-                <td>{book.author}</td>
-                <td>{book.year}</td>
-                <td>
-                  <VerticallyCenteredModal
-                    show={modalShow}
-                    onHide={() => setModalShow(false)}
-                    onConfirm={confirmDelete}
-                    message="Are you sure you want to delete this book?"
-                  />
-                    <Link to={`/edit/${book.id}`} className="btn-edit">
-                    <FaEdit />
-                    </Link>
-                  <button className="btn-delete" onClick={() => {
+          {books?.data?.map((book) => (
+            <tr key={book.id}>
+              <th>{book.id}</th>
+              <td>{book.title}</td>
+              <td>{book.author}</td>
+              <td>{book.year}</td>
+              <td>
+                <VerticallyCenteredModal
+                  show={modalShow}
+                  onHide={() => setModalShow(false)}
+                  onConfirm={confirmDelete}
+                  message="Are you sure you want to delete this book?"
+                />
+                <Link to={`/edit/${book.id}`} className="btn-edit">
+                  <FaEdit />
+                </Link>
+                <button
+                  className="btn-delete"
+                  onClick={() => {
                     setBookToDelete(book);
                     setModalShow(true);
-                  }}>
-                    <FaTrash />
-                  </button>
+                  }}
+                >
+                  <FaTrash />
+                </button>
 
-                  <Link to={`/detail/${book.id}`} className="btn-info">
-                    <FaCircleInfo />
-                  </Link>
-
-                </td>
-              </tr>
-            ))
-          }
+                <Link to={`/detail/${book.id}`} className="btn-info">
+                  <FaCircleInfo />
+                </Link>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
-
+      <ReactPaginate
+        previousLabel={"Previous"}
+        nextLabel={"Next"}
+        pageCount={pageCount}
+        onPageChange={changePage}
+        containerClassName={"paginationBttns"}
+        previousLinkClassName={"previousBttn"}
+        nextLinkClassName={"nextBttn"}
+        disabledClassName={"paginationDisabled"}
+        activeClassName={"active"}
+      />
     </div>
   );
 }

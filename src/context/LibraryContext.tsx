@@ -9,9 +9,9 @@ import { ApiResponseProp, BookPropType } from "../types/books/book.type";
 
 
 export type LibraryContextValue = {
-    books: BookPropType[];
+    books: ApiResponseProp<BookPropType[]> | null;
     book: BookPropType | null;
-    getBooksFromDb: (searchTerm: string) => Promise<ApiResponseProp<BookPropType[]>>;
+    getBooksFromDb: (page:number, limit: number, searchTerm?: string) => Promise<ApiResponseProp<BookPropType[]>>;
     edit: (data: BookPropType, id: number) => Promise<void>;
     getOneBook: (id: number) => Promise<BookPropType>
     deleteBookById: (id: number) => Promise<void>
@@ -22,13 +22,13 @@ export const LibraryContext = createContext<LibraryContextValue | null>(null);
 
 export const LibraryProvider = ({ children }: PropsWithChildren) => {
 
-    const [books, setBooks] = useState<BookPropType[]>([]);
+    const [books, setBooks] = useState<ApiResponseProp<BookPropType[]> | null>(null);
     const [book, setBook] = useState<BookPropType | null>(null)
 
-    const getBooksFromDb = async (searchTerm: string): Promise<ApiResponseProp<BookPropType[]>> => {
+    const getBooksFromDb = async (page:number, limit: number, searchTerm: string = ""): Promise<ApiResponseProp<BookPropType[]>> => {
         try {
-            const books = await getAllBooks(searchTerm);
-            setBooks(books.data)
+            const books = await getAllBooks(page, limit, searchTerm);
+            setBooks(books)
             return books;
         } catch (error) {
             throw error;

@@ -8,9 +8,9 @@ const token = localStorage.getItem(TOKEN_KEY)
 
 const API_URL = import.meta.env.VITE_API_URL
 
-export async function getAllBooks(searchTerm: string = ""): Promise<ApiResponseProp<BookPropType[]>> {
+export async function getAllBooks(page:number, limit: number, searchTerm: string = ""): Promise<ApiResponseProp<BookPropType[]>> {
     try {
-        const res = await axios.get(`${API_URL}/books?search=${searchTerm}`);
+        const res = await axios.get(`${API_URL}/books?page=${page}&limit=${limit}&search=${searchTerm}`);
         return res.data
     } catch (error) {
         return Promise.reject(error);
