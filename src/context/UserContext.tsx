@@ -78,8 +78,6 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 
         const { data: response } = await axios.post(`${API_URL}/auth`, loginData);
 
-        console.log(response);
-
         setAuthState({
             token: response.token,
             authenticated: true,

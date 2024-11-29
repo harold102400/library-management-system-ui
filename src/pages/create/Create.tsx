@@ -32,7 +32,6 @@ export const Create = () => {
         ...data,
         user_id: String(id),
       };
-      console.log(newData);
       navigate("/books");
       await createBook(newData);
     } catch (error: any) {

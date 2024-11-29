@@ -31,7 +31,6 @@ const Login = () => {
             const loginInput = (email_or_username) ? { email: email_or_username, password } : { username: email_or_username, password };
             await onLogin(loginInput.email ?? loginInput.username, password);
         } catch (error: any) {
-            console.log(error?.response?.data?.message)
             handlError(error?.response?.data?.message);
         }
         finally{
