@@ -80,9 +80,6 @@ export default function BookTable() {
     return () => clearTimeout(debounce);
   }, [searchTerm, searchParams]);  // Dependencias corregidas
   
-
-  console.log(books)
-
   return (
     <div className="table_container">
       <div className="search-container">
