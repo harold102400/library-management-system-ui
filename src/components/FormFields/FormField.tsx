@@ -12,10 +12,10 @@ export const FormField = ({ label, htmlFor, error, children }: FieldProps) => {
 
   return (
     <div className="form-field">
-      {label && <label htmlFor={id}>{label}</label>}
+      {label && <label htmlFor={id} className="form-label">{label}</label>}
       {children}
       {error && (
-        <div role={"alert"} className="error">
+        <div role={"alert"} className="error-message">
           {error}
         </div>
       )}

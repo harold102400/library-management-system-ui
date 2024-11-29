@@ -25,6 +25,7 @@ export default function BookTable() {
       await deleteBookById(Number(bookToDelete.id));
       setModalShow(false);  
       setBookToDelete(null); 
+      window.location.reload();
     }
    } catch (error: any) {
     handlError(error?.response?.data?.message)

@@ -6,7 +6,7 @@ interface FieldSetProps {
 }
 export const FieldSet = ({ label, children }: FieldSetProps) => {
   return (
-    <fieldset>
+    <fieldset className="form-fieldset">
       {label && <legend>{label}</legend>}
       <div>{children}</div>
     </fieldset>

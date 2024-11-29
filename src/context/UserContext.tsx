@@ -84,7 +84,7 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
             token: response.token,
             authenticated: true,
             user_id: response.user_id,
-            username: response.username,
+            username: response.display_name,
         });
 
         axios.defaults.headers.post["Authorization"] = `Bearer ${response.token}`;

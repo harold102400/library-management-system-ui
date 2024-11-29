@@ -4,9 +4,11 @@ import { FormField } from "../../components/FormFields/FormField";
 import { BookPropType } from "../../types/books/book.type";
 import { useAuth } from "../../context/UserContext";
 import { handlError } from "../../components/ErrorAlert/ErrorAlert";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { useLibrary } from "../../context/LibraryContext";
 import { useEffect } from "react";
+import "../../components/FormFields/FormStyles.css";
+
 
 export const Edit = () => {
   const { edit, book, getOneBook } = useLibrary();
@@ -58,14 +60,15 @@ export const Edit = () => {
   const genreValues = watch("genre");
 
   return (
-    <div>
-      <h1>Edit form</h1>
-      <form onSubmit={handleSubmit(submitForm)}>
+    <div className="form-container">
+      <h1 className="form-header">Edit form</h1>
+      <form onSubmit={handleSubmit(submitForm)} className="form">
         <FieldSet>
           <FormField label="Title" error={errors.title?.message}>
             <input
               type="text"
               placeholder="Title"
+              className="form-input"
               {...register("title", {
                 required: "This field is required and cannot be empty",
                 setValueAs: (value) => value.trim(),
@@ -86,6 +89,7 @@ export const Edit = () => {
             <input
               type="text"
               placeholder="Author"
+              className="form-input"
               {...register("author", {
                 required: "This field is required and cannot be empty",
                 setValueAs: (value) => value.trim(),
@@ -105,6 +109,7 @@ export const Edit = () => {
             <input
               type="date"
               placeholder="Year"
+              className="form-input"
               {...register("year", {
                 required: "This field is required and cannot be empty"
               })}
@@ -112,32 +117,35 @@ export const Edit = () => {
           </FormField>
 
           <div className="categories">
-            <p>Categories</p>
+            <p className="categories-header">Categories</p>
             {["Fantasy", "Adventure", "Science Fiction", "Mystery"].map((genre) => (
-              <FormField label={genre} key={genre}>
+              <div className="checkbox-container" key={genre}>
                 <input
                   type="checkbox"
+                  className="checkbox-input"
                   value={genre}
                   {...register("genre")}
                   checked={genreValues?.includes(genre)}
                 />
-              </FormField>
+                <label className="checkbox-label">{genre}</label>
+              </div>
             ))}
           </div>
 
           <FormField label="Favorite" error={errors.isFavorite?.message}>
             <input
               type="checkbox"
+              className="checkbox-input"
               {...register("isFavorite")}
             />
           </FormField>
         </FieldSet>
 
         <FormField>
-          <button type="submit">Edit this book</button>
+          <button type="submit" className="form-button">Edit this book</button>
         </FormField>
         <FormField>
-          <button type="submit">Cancel</button>
+          <Link to="/books" className="cancel-button">Cancel</Link>
         </FormField>
       </form>
     </div>

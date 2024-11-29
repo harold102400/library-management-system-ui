@@ -124,6 +124,30 @@ button:hover {
     color: #0b572b;
 }
 
+.btn-create {
+    background-color: #3498db;
+    color: #ffffff;
+    padding: 0.7rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.btn-create:hover {
+    background-color: #2980b9;
+    color: #fafafa;
+    transform: translateY(-2px);
+  }
+  
+  .btn-create:active {
+    background-color: #1c5980;
+    transform: translateY(0);
+  }
 
 
 .search-container {

@@ -1,5 +1,3 @@
-// RecipeForm.tsx
-
 import { useForm } from "react-hook-form";
 import { FieldSet } from "../../components/FormFields/FieldSet";
 import { FormField } from "../../components/FormFields/FormField";
@@ -7,14 +5,23 @@ import { createBook } from "../../services/apiFunctions";
 import { BookPropType } from "../../types/books/book.type";
 import { useAuth } from "../../context/UserContext";
 import { handlError } from "../../components/ErrorAlert/ErrorAlert";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import "../../components/FormFields/FormStyles.css";
 
 export const Create = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<BookPropType>();
+  } = useForm<BookPropType>({
+    defaultValues: {
+      title: "",
+      author: "",
+      year: "",
+      isFavorite: 0,
+      genre: [],
+    },
+  });
   const { authState: user_id } = useAuth();
   const navigate = useNavigate();
   const id = user_id.user_id;
@@ -34,14 +41,15 @@ export const Create = () => {
   };
 
   return (
-    <div>
-      <h1>Create form</h1>
-      <form onSubmit={handleSubmit(submitForm)}>
+    <div className="form-container">
+      <h1 className="form-header">Create form</h1>
+      <form onSubmit={handleSubmit(submitForm)} className="form">
         <FieldSet>
           <FormField label="Title" error={errors.title?.message}>
             <input
               type="text"
               placeholder="Title"
+              className="form-input"
               {...register("title", {
                 required: "This field is required and cannot be empty",
                 setValueAs: (value) => value.trim(),
@@ -60,6 +68,7 @@ export const Create = () => {
             <input
               type="text"
               placeholder="Author"
+              className="form-input"
               {...register("author", {
                 required: "This field is required and cannot be empty",
                 setValueAs: (value) => value.trim(),
@@ -79,6 +88,7 @@ export const Create = () => {
             <input
               type="date"
               placeholder="Year"
+              className="form-input"
               {...register("year", {
                 required: "This field is required and cannot be empty",
               })}
@@ -86,12 +96,18 @@ export const Create = () => {
           </FormField>
 
           <div className="categories">
-            <p>Categories</p>
+            <p className="categories-header">Categories</p>
             {["Fantasy", "Adventure", "Science Fiction", "Mystery"].map(
               (genre) => (
-                <FormField label={genre} key={genre}>
-                  <input type="checkbox" value={genre} {...register("genre")} />
-                </FormField>
+                <div className="checkbox-container" key={genre}>
+                  <input 
+                  type="checkbox"
+                  className="checkbox-input" 
+                  value={genre} 
+                  {...register("genre")} 
+                  />
+                  <label className="checkbox-label">{genre}</label>
+                </div>
               )
             )}
           </div>
@@ -99,6 +115,7 @@ export const Create = () => {
           <FormField label="Favorite" error={errors.isFavorite?.message}>
             <input
               type="checkbox"
+              className="checkbox-input"
               {...register("isFavorite", {
                 setValueAs: (value) => (value ? 1 : 0),
               })}
@@ -107,10 +124,12 @@ export const Create = () => {
         </FieldSet>
 
         <FormField>
-          <button>Create new book</button>
+          <button className="form-button">Create new book</button>
         </FormField>
         <FormField>
-          <button type="submit">Cancel</button>
+          <Link to="/books" className="cancel-button">
+            Cancel
+          </Link>
         </FormField>
       </form>
     </div>
