@@ -85,7 +85,7 @@ const Register = () => {
                                         required:  "This field is required and cannot be empty",
                                         setValueAs: (value) => value.trim(),
                                         pattern: {
-                                            value: /^[A-Za-zÀ-ÿ\s.]+$/,
+                                            value: /^[A-Za-zÀ-ÿ0-9\s.]+$/,
                                             message: "Title must contain only letters and spaces",
                                           },
                                     })}
