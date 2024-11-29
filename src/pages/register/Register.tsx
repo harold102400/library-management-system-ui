@@ -1,8 +1,10 @@
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { InputValueProp } from "../../types/books/user.type";
 import { useAuth } from "../../context/UserContext";
-// import './Register.css';
+import { handlError } from "../../components/ErrorAlert/ErrorAlert";
+import { FaArrowLeft } from "react-icons/fa";
+import './Register.css';
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors }, reset, } = useForm<InputValueProp>();
@@ -15,60 +17,84 @@ const Register = () => {
             reset();
             navigate('/login');
         } catch (error: any) {
-            console.log(error?.response?.data?.message);
-            console.error(error?.response?.data?.message)
-            // handleError(error?.response.data?.message);
+            handlError(error?.response.data?.message);
         }
     }
     return (
         <>
-            <div className="container-login">
-                <div className="form-container">
-                    <div className="container">
-                        <form onSubmit={handleSubmit(onSubmit)} className="form">
-                            <div className="form-header">
-                                <div className="form-title">Register</div>
+            <div className="register-container-login">
+                <div className="form-register-container">
+                    <div className="register-container">
+                        <form onSubmit={handleSubmit(onSubmit)} className="form-register">
+                            <div className="form-register-header">
+                                <Link to="/login"
+                                className="back-Link"
+                            >
+                                <FaArrowLeft className="back-icon" />
+                                </Link>
+                                <div className="form-register-title">Register</div>
                             </div>
-                            <div className="form-body">
+                            <div className="form-register-body">
                                 <input
-                                    className="form-input"
+                                    className="form-register-input"
                                     type="text"
                                     placeholder="E.g., username"
-                                    {...register("username", { required: true })}
+                                    {...register("username", { 
+                                        required:  "This field is required and cannot be empty",
+                                        setValueAs: (value) => value.trim(),
+                                        pattern: {
+                                            value: /^[A-Za-zÀ-ÿ0-9\s.@]+$/,
+                                            message: "Title must contain only letters and spaces",
+                                          },
+                                    })}
                                 />
                                 {errors.username && (
                                     <span
                                     className="span-error-message"
                                     >
-                                        This field is required
+                                        {errors.username.message}
                                     </span>
                                 )}
 
                                 <input
-                                    className="form-input"
+                                    className="form-register-input"
                                     type="text"
                                     placeholder="E.g., email"
-                                    {...register("email", { required: true })}
+                                    {...register("email", { 
+                                        required:  "This field is required and cannot be empty",
+                                        setValueAs: (value) => value.trim(),
+                                        pattern: {
+                                            value: /^[A-Za-zÀ-ÿ0-9\s.@]+$/,
+                                            message: "Title must contain only letters and spaces",
+                                          }, 
+                                    })}
                                 />
                                 {errors.email && (
                                     <span
                                     className="span-error-message"
                                     >
-                                        This field is required
+                                        {errors.email?.message}
                                     </span>
                                 )}
 
                                 <input
-                                    className="form-input"
+                                    className="form-register-input"
                                     type="password"
                                     placeholder="E.g., •••••••••••••"
-                                    {...register("password", { required: true })}
+                                    {...register("password", { 
+                                        required:  "This field is required and cannot be empty",
+                                        setValueAs: (value) => value.trim(),
+                                        pattern: {
+                                            value: /^[A-Za-zÀ-ÿ\s.]+$/,
+                                            message: "Title must contain only letters and spaces",
+                                          },
+                                    })}
                                 />
                                 {errors.password && (
                                     <span
                                     className="span-error-message"
                                     >
-                                        This field is required
+                                        {errors.password.message}
                                     </span>
                                 )}
 
