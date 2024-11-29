@@ -12,11 +12,15 @@
 .register-container-login {
   font-family: var(--mainFont);
   background-color: var(--mainColor);
-
   height: 100vh;
   display: flex;
   justify-content: center;
   flex-direction: column;
+  background-image: url("../../assets/morning-scenery-wallpaper-2560x1600_7.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 .register-form-container {
