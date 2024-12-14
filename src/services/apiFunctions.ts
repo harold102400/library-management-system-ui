@@ -3,10 +3,24 @@ import { BookPropType, ApiResponseProp } from "../types/books/book.type";
 
 
 const TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY;
-const token = localStorage.getItem(TOKEN_KEY)
-
-
 const API_URL = import.meta.env.VITE_API_URL
+
+const api = axios.create({
+    baseURL: API_URL,
+});
+
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+        config.headers["Content-Type"] = 'multipart/form-data';
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
+
+
 
 export async function getAllBooks(page:number, limit: number, searchTerm: string = ""): Promise<ApiResponseProp<BookPropType[]>> {
     try {
@@ -29,7 +43,7 @@ export async function getBook(id: number): Promise<BookPropType> {
 export async function createBook(data: BookPropType) : Promise<void>
 {
     try {
-        await axios.post(`${API_URL}/books`, data);
+        await api.post(`${API_URL}/books`, data);
     } catch (error) {
         return Promise.reject(error);
     }
@@ -38,12 +52,7 @@ export async function createBook(data: BookPropType) : Promise<void>
 export async function editBook(data: BookPropType, id: number) : Promise<void>
 {
     try {
-        await axios.put(`${API_URL}/books/${id}`, data, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            }
-        });
+        await api.put(`/books/${id}`, data);
     } catch (error) {
         return Promise.reject(error);
     }
@@ -52,12 +61,7 @@ export async function editBook(data: BookPropType, id: number) : Promise<void>
 export async function deleteBook(id: number) : Promise<void>
 {
     try {
-        await axios.delete(`${API_URL}/books/${id}`,{
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            }
-        });
+        await api.delete(`${API_URL}/books/${id}`);
     } catch (error) {
         return Promise.reject(error);
     }

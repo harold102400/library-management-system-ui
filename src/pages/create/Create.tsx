@@ -25,20 +25,46 @@ export const Create = () => {
   const { authState: user_id } = useAuth();
   const navigate = useNavigate();
   const id = user_id.user_id;
+  
 
   const submitForm = async (data: BookPropType) => {
     try {
-      const newData = {
-        ...data,
-        user_id: String(id),
-      };
+      const formData: any = new FormData();
+  
+      Object.entries(data).forEach(([key, value]) => {
+        // Manejar la imagen
+        if (key === "coverImage" && value instanceof FileList) {
+          formData.append(key, value[0]);
+        }
+  
+        // Manejar el género como un array de strings
+        if (key === "genre") {
+          const genresArray = Array.isArray(value) ? value : [];
+          console.log(JSON.stringify(genresArray))
+          formData.append(key, JSON.stringify(genresArray));
+        }
+  
+        // Manejar otros campos
+        if (key !== "coverImage" && key !== "genre") {
+          formData.append(key, String(value));
+        }
+      });
+  
+      // Agregar user_id al FormData
+      formData.append("user_id", id);
+      console.log(formData)
+  
+      // Navegar a otra ruta
       navigate("/books");
-      await createBook(newData);
+  
+      // Enviar datos al servidor
+      await createBook(formData);
     } catch (error: any) {
       handlError(error?.response?.data?.message);
     }
   };
-
+  
+  
   return (
     <div className="form-container">
       <h1 className="form-header">Create form</h1>
@@ -111,7 +137,19 @@ export const Create = () => {
             )}
           </div>
 
-          <FormField label="Favorite" error={errors.isFavorite?.message}>
+          <FormField label="Picture" error={errors.coverImage?.message}>
+            <input
+              {...register("coverImage", {
+                required: "The cover picture is required",
+              })}
+              type="file"
+              id="coverImage"
+              accept=".jpg,.jpeg"
+              className="form-input"
+            />
+          </FormField>
+
+          <FormField label="Is this your Favorite Book?" error={errors.isFavorite?.message}>
             <input
               type="checkbox"
               className="checkbox-input"

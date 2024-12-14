@@ -7,7 +7,7 @@ const Header = () => {
 
   const handleSignout = () => {
     onLogout();
-    localStorage.clear();
+    // localStorage.clear();
     navigate("/login");
     window.location.reload();
   };
