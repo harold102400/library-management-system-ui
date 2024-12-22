@@ -8,8 +8,8 @@ type Props = {
 export const AppRouter = ({ children }: Props) => {
     return (
         <BrowserRouter>
-            {children}
           <PublicRoutes />
+            {children}
         </BrowserRouter>
     )
 }
