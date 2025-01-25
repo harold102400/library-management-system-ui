@@ -1,7 +1,7 @@
 import './RootLayout.css';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '../../context/UserContext';
-import Header from '../SidebarMenu/Header';
+import Header from '../Header/Header';
 
 export const RootLayout = () => {
   const { authState: userDisplayName } = useAuth();
