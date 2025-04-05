@@ -4,7 +4,7 @@ import {
     useContext,
     useState,
 } from "react";
-import { deleteBook, editBook, getAllBooks, getBook } from "../services/apiFunctions";
+import { deleteBook, editBook, getAllBooks, getBook, isFavorite } from "../services/apiFunctions";
 import { ApiResponseProp, BookPropType } from "../types/books/book.type";
 
 
@@ -15,6 +15,8 @@ export type LibraryContextValue = {
     edit: (data: BookPropType, id: number) => Promise<void>;
     getOneBook: (id: number) => Promise<BookPropType>
     deleteBookById: (id: number) => Promise<void>
+    isFavoriteBook: (id: number) => Promise<void>
+    favorite: number
 };
 
 
@@ -24,15 +26,14 @@ export const LibraryProvider = ({ children }: PropsWithChildren) => {
 
     const [books, setBooks] = useState<ApiResponseProp<BookPropType[]> | null>(null);
     const [book, setBook] = useState<BookPropType | null>(null)
+    const [favorite, setFavorite] = useState<number>(0);
+
 
     const getBooksFromDb = async (page:number, limit: number, searchTerm: string = ""): Promise<ApiResponseProp<BookPropType[]>> => {
-        try {
             const books = await getAllBooks(page, limit, searchTerm);
             setBooks(books)
             return books;
-        } catch (error) {
-            throw error;
-        }
+       
     }
 
     const getOneBook = async (id: number): Promise<BookPropType> =>{
@@ -45,6 +46,12 @@ export const LibraryProvider = ({ children }: PropsWithChildren) => {
         await editBook(book, bookId)
     } 
 
+    const isFavoriteBook = async (bookId: number) =>{
+        const newFavoriteStatus = favorite === 0 ? 1 : 0;
+        await isFavorite(newFavoriteStatus, bookId)
+        setFavorite(newFavoriteStatus);
+    } 
+
     const deleteBookById = async (id: number): Promise<void> =>{
         await deleteBook(id)
     } 
@@ -55,7 +62,9 @@ export const LibraryProvider = ({ children }: PropsWithChildren) => {
         getBooksFromDb,
         edit,
         getOneBook,
-        deleteBookById
+        deleteBookById,
+        isFavoriteBook,
+        favorite
     };
 
     return <LibraryContext.Provider value={value}>{children}</LibraryContext.Provider>;

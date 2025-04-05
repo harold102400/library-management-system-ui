@@ -124,6 +124,27 @@ button:hover {
     color: #0b572b;
 }
 
+.btn-favorite {
+    color: #a3a3a3;
+    transition: transform .2s;
+
+}
+
+.btn-favorite:hover {
+    color: #a3a3a3;
+    -ms-transform: scale(1.5); /* IE 9 */
+  -webkit-transform: scale(1.5); /* Safari 3-8 */
+  transform: scale(1.5); 
+}
+.btn-favorite-active {
+    color: #E4B91C;
+} 
+
+.btn-favorite-active:hover {
+    -ms-transform: scale(1.5); /* IE 9 */
+  -webkit-transform: scale(1.5); /* Safari 3-8 */
+  transform: scale(1.5); 
+}
 .btn-create {
     background-color: #3498db;
     color: #ffffff;

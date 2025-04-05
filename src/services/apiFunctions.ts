@@ -58,6 +58,15 @@ export async function editBook(data: BookPropType, id: number) : Promise<void>
     }
 }
 
+export async function isFavorite(isFavorite: number, id: number) : Promise<void>
+{
+    try {
+        await api.patch(`/books/${id}`, {isFavorite});
+    } catch (error) {
+        return Promise.reject(error);
+    }
+}
+
 export async function deleteBook(id: number) : Promise<void>
 {
     try {
