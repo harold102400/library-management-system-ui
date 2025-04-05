@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { BookPropType } from "../../types/books/book.type";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { ImStarFull  } from "react-icons/im";
 import { FaCircleInfo } from "react-icons/fa6";
 import { useLibrary } from "../../context/LibraryContext";
 import { VerticallyCenteredModal } from "../../components/VerticallyCenteredModal/VerticallyCenteredModal";
@@ -14,7 +15,14 @@ export default function BookTable() {
   const [searchTerm, setSearchTerm] = useState("");
   const [modalShow, setModalShow] = useState(false);
   const [bookToDelete, setBookToDelete] = useState<BookPropType | null>(null);
+  // const [isFavorite, setIsFavorite] = useState<number>(0);
   const { getBooksFromDb, books, deleteBookById } = useLibrary()
+  // const myRef= useRef<HTMLButtonElement | null>(null);
+  const myRef = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const { isFavoriteBook } = useLibrary();
+
+
   
 
   const [pageCount, setPageCount] = useState(0);
@@ -63,6 +71,21 @@ export default function BookTable() {
    }
   };
 
+  const handleFavorite = async (bookId: number, index: number): Promise<void> => {
+    const button = myRef.current[index]; 
+
+    if (button) {
+      if (button.classList.contains('btn-favorite-active')) {
+        button.classList.remove('btn-favorite-active');
+        button.classList.add('btn-favorite');
+      } else {
+        button.classList.add('btn-favorite-active');
+        button.classList.remove('btn-favorite');
+      }
+      await isFavoriteBook(bookId);
+    }
+  }
+
   useEffect(() => {
     const page = Number(searchParams.get("page")) || 1;
     const limit = Number(searchParams.get("limit")) || 5;
@@ -106,7 +129,7 @@ export default function BookTable() {
           </tr>
         </thead>
         <tbody>
-          {books?.data?.map((book) => (
+          {books?.data?.map((book, index) => (
             <tr key={book.id}>
               <th>{book.id}</th>
               <td>{book.title}</td>
@@ -135,6 +158,9 @@ export default function BookTable() {
                 <Link to={`/detail/${book.id}`} className="btn-info">
                   <FaCircleInfo />
                 </Link>
+                <button onClick={() =>handleFavorite(Number(book.id), index)} className={`btn-favorite ${book.isFavorite === 1 ? 'btn-favorite-active' : ''}`} ref={(el) => (myRef.current[index] = el)}>
+                  <ImStarFull  />
+                </button>
               </td>
             </tr>
           ))}
