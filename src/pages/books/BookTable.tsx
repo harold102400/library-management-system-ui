@@ -3,29 +3,27 @@ import { BookPropType } from "../../types/books/book.type";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { ImStarFull  } from "react-icons/im";
 import { FaCircleInfo } from "react-icons/fa6";
+import { FcAddImage } from "react-icons/fc";
 import { useLibrary } from "../../context/LibraryContext";
 import { VerticallyCenteredModal } from "../../components/VerticallyCenteredModal/VerticallyCenteredModal";
 import { Link, useSearchParams} from "react-router-dom";
 import ReactPaginate from "react-paginate";
-import "./BookTable.css";
 import { handlError } from "../../components/ErrorAlert/ErrorAlert";
+import { ImageUploaderModal } from "../../components/ImageUploaderModal/ImageUploaderModal";
+import "./BookTable.css";
 
 export default function BookTable() {
 
+  const [pageCount, setPageCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [modalShow, setModalShow] = useState(false);
+  const [activeModal, setActiveModal] = useState<{
+    type: 'delete' | 'image' | null;
+    bookId: string | null;
+  } | null>(null);
   const [bookToDelete, setBookToDelete] = useState<BookPropType | null>(null);
-  // const [isFavorite, setIsFavorite] = useState<number>(0);
-  const { getBooksFromDb, books, deleteBookById } = useLibrary()
-  // const myRef= useRef<HTMLButtonElement | null>(null);
+  const { getBooksFromDb, books, deleteBookById, isFavoriteBook } = useLibrary()
   const myRef = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const { isFavoriteBook } = useLibrary();
-
-
-  
-
-  const [pageCount, setPageCount] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams({
     page: "1",
     limit: "5",
@@ -62,7 +60,7 @@ export default function BookTable() {
    try {
     if (bookToDelete) {
       await deleteBookById(Number(bookToDelete.id));
-      setModalShow(false);  
+      setActiveModal(null);  
       setBookToDelete(null); 
       window.location.reload();
     }
@@ -137,8 +135,8 @@ export default function BookTable() {
               <td>{book.year}</td>
               <td>
                 <VerticallyCenteredModal
-                  show={modalShow}
-                  onHide={() => setModalShow(false)}
+                  show={activeModal?.type === 'delete' && activeModal.bookId === book.id}
+                  onHide={() => setActiveModal(null)}
                   onConfirm={confirmDelete}
                   message="Are you sure you want to delete this book?"
                 />
@@ -149,7 +147,7 @@ export default function BookTable() {
                   className="btn-delete"
                   onClick={() => {
                     setBookToDelete(book);
-                    setModalShow(true);
+                    setActiveModal({ type: 'delete', bookId: book.id });
                   }}
                 >
                   <FaTrash />
@@ -160,6 +158,20 @@ export default function BookTable() {
                 </Link>
                 <button onClick={() =>handleFavorite(Number(book.id), index)} className={`btn-favorite ${book.isFavorite === 1 ? 'btn-favorite-active' : ''}`} ref={(el) => (myRef.current[index] = el)}>
                   <ImStarFull  />
+                </button>
+
+                <ImageUploaderModal
+                  show={activeModal?.type === 'image' && activeModal.bookId === book.id}
+                  onHide={() => setActiveModal(null)}
+                  book={book}
+                />
+
+                <button
+                  onClick={() => {
+                    setActiveModal({ type: 'image', bookId: book.id });
+                  }}
+                >
+                  <FcAddImage />
                 </button>
               </td>
             </tr>

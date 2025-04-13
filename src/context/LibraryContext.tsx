@@ -1,6 +1,8 @@
 import {
     createContext,
+    Dispatch,
     PropsWithChildren,
+    SetStateAction,
     useContext,
     useState,
 } from "react";
@@ -13,10 +15,11 @@ export type LibraryContextValue = {
     book: BookPropType | null;
     getBooksFromDb: (page:number, limit: number, searchTerm?: string) => Promise<ApiResponseProp<BookPropType[]>>;
     edit: (data: BookPropType, id: number) => Promise<void>;
-    getOneBook: (id: number) => Promise<BookPropType>
-    deleteBookById: (id: number) => Promise<void>
-    isFavoriteBook: (id: number) => Promise<void>
-    favorite: number
+    getOneBook: (id: number) => Promise<BookPropType>;
+    deleteBookById: (id: number) => Promise<void>;
+    isFavoriteBook: (id: number) => Promise<void>;
+    favorite: number;
+    setBooks: Dispatch<SetStateAction<ApiResponseProp<BookPropType[]> | null>>;
 };
 
 
@@ -64,7 +67,8 @@ export const LibraryProvider = ({ children }: PropsWithChildren) => {
         getOneBook,
         deleteBookById,
         isFavoriteBook,
-        favorite
+        favorite,
+        setBooks
     };
 
     return <LibraryContext.Provider value={value}>{children}</LibraryContext.Provider>;

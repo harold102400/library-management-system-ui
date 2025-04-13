@@ -18,7 +18,7 @@ export const Edit = () => {
       author: '',
       year: '',
       isFavorite: 0,
-      genre: [] 
+      genre: '[]'
     }
   });
   const {id} = useParams()
@@ -45,10 +45,9 @@ export const Edit = () => {
 
   const submitForm = async (data: BookPropType) => {
     try {
-      const genresArray = Array.isArray(data.genre) ? data.genre : [];
       const newData = {
         ...data,
-        genre: genresArray,
+        genre: JSON.stringify(data.genre),
         user_id: String(userId),
       };
       
