@@ -30,36 +30,13 @@ export const Create = () => {
 
   const submitForm = async (data: BookPropType) => {
     try {
-      const formData: any = new FormData();
-  
-      Object.entries(data).forEach(([key, value]) => {
-        // Manejar la imagen
-        if (key === "coverImage" && value instanceof FileList) {
-          formData.append(key, value[0]);
-        }
-  
-        // Manejar el género como un array de strings
-        if (key === "genre") {
-          const genresArray = Array.isArray(value) ? value : [];
-          console.log(JSON.stringify(genresArray))
-          formData.append(key, JSON.stringify(genresArray));
-        }
-  
-        // Manejar otros campos
-        if (key !== "coverImage" && key !== "genre") {
-          formData.append(key, String(value));
-        }
-      });
-  
-      // Agregar user_id al FormData
-      formData.append("user_id", id);
-      console.log(formData)
-  
-      // Navegar a otra ruta
+      const newData = {
+        ...data,
+        genre: JSON.stringify(data.genre),
+        user_id: String(id),
+      };
+      await createBook(newData);
       navigate("/books");
-  
-      // Enviar datos al servidor
-      await createBook(formData);
     } catch (error: unknown) {
       const errorMessage = handleApiError(error)
       handlError(errorMessage)
