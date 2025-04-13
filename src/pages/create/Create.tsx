@@ -20,7 +20,7 @@ export const Create = () => {
       author: "",
       year: "",
       isFavorite: 0,
-      genre: [],
+      genre: '[]',
     },
   });
   const { authState: user_id } = useAuth();
@@ -139,7 +139,7 @@ export const Create = () => {
             )}
           </div>
 
-          <FormField label="Picture" error={errors.coverImage?.message}>
+          {/* <FormField label="Picture" error={errors.coverImage?.message}>
             <input
               {...register("coverImage", {
                 required: "The cover picture is required",
@@ -149,9 +149,9 @@ export const Create = () => {
               accept=".jpg,.jpeg"
               className="form-input"
             />
-          </FormField>
+          </FormField> */}
 
-          <FormField label="Is this your Favorite Book?" error={errors.isFavorite?.message}>
+          {/* <FormField label="Is this your Favorite Book?" error={errors.isFavorite?.message}>
             <input
               type="checkbox"
               className="checkbox-input"
@@ -159,7 +159,7 @@ export const Create = () => {
                 setValueAs: (value) => (value ? 1 : 0),
               })}
             />
-          </FormField>
+          </FormField> */}
         </FieldSet>
 
         <FormField>

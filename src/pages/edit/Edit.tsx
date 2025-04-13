@@ -134,13 +134,13 @@ export const Edit = () => {
             ))}
           </div>
 
-          <FormField label="Favorite" error={errors.isFavorite?.message}>
+          {/* <FormField label="Favorite" error={errors.isFavorite?.message}>
             <input
               type="checkbox"
               className="checkbox-input"
               {...register("isFavorite")}
             />
-          </FormField>
+          </FormField> */}
         </FieldSet>
 
         <FormField>
