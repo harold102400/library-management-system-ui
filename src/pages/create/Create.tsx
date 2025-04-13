@@ -7,6 +7,7 @@ import { useAuth } from "../../context/UserContext";
 import { handlError } from "../../components/ErrorAlert/ErrorAlert";
 import { useNavigate, Link } from "react-router-dom";
 import "../../components/FormFields/FormStyles.css";
+import { handleApiError } from "../../utils/handleApiErrors";
 
 export const Create = () => {
   const {
@@ -59,8 +60,9 @@ export const Create = () => {
   
       // Enviar datos al servidor
       await createBook(formData);
-    } catch (error: any) {
-      handlError(error?.response?.data?.message);
+    } catch (error: unknown) {
+      const errorMessage = handleApiError(error)
+      handlError(errorMessage)
     }
   };
   

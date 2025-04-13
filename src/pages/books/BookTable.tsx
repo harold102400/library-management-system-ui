@@ -11,6 +11,7 @@ import { handlError } from "../../components/ErrorAlert/ErrorAlert";
 import { ImageUploaderModal } from "../../components/ImageUploaderModal/ImageUploaderModal";
 import FavoriteButton from "../../components/FavoriteButton/FavoriteButton";
 import "./BookTable.css";
+import { handleApiError } from "../../utils/handleApiErrors";
 
 export default function BookTable() {
 
@@ -64,8 +65,9 @@ export default function BookTable() {
       setBookToDelete(null); 
       window.location.reload();
     }
-   } catch (error: any) {
-    handlError(error?.response?.data?.message)
+   } catch (error: unknown) {
+    const errorMessage = handleApiError(error)
+    handlError(errorMessage)
    }
   };
 

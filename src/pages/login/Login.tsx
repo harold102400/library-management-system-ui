@@ -6,6 +6,7 @@ import { UserPropType } from "../../types/books/user.type";
 import { useAuth } from "../../context/UserContext";
 import { handlError } from "../../components/ErrorAlert/ErrorAlert";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import { handleApiError } from "../../utils/handleApiErrors";
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors }} = useForm<UserPropType>();
@@ -30,8 +31,9 @@ const Login = () => {
 
             const loginInput = (email_or_username) ? { email: email_or_username, password } : { username: email_or_username, password };
             await onLogin(loginInput.email ?? loginInput.username, password);
-        } catch (error: any) {
-            handlError(error?.response?.data?.message);
+        } catch (error: unknown) {
+            const errorMessage = handleApiError(error)
+            handlError(errorMessage)
         }
         finally{
             setTimeout(() => {

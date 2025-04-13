@@ -5,6 +5,7 @@ import { useAuth } from "../../context/UserContext";
 import { handlError } from "../../components/ErrorAlert/ErrorAlert";
 import { FaArrowLeft } from "react-icons/fa";
 import './Register.css';
+import { handleApiError } from "../../utils/handleApiErrors";
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors }, reset, } = useForm<InputValueProp>();
@@ -16,8 +17,9 @@ const Register = () => {
             await registerNewUser(data.username, data.email, data.password);
             reset();
             navigate('/login');
-        } catch (error: any) {
-            handlError(error?.response.data?.message);
+        } catch (error: unknown) {
+            const errorMessage = handleApiError(error)
+            handlError(errorMessage)
         }
     }
     return (

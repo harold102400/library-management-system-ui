@@ -5,6 +5,7 @@ import { BookPropType } from "../../types/books/book.type";
 import { handlError } from "../ErrorAlert/ErrorAlert";
 import { successAlert } from "../SuccessAlert/SuccessAlert";
 import "./ImageUploader.css";
+import { handleApiError } from "../../utils/handleApiErrors";
 
 type ImageUploaderProps = {
   book: BookPropType;
@@ -81,8 +82,9 @@ const ImageUploader = ({ book, onHide }: ImageUploaderProps) => {
       handleImage({ ...book, coverImage: updatedBookResponse.coverImage });
 
       successAlert("The new image has been saved successfully!");
-    } catch (error: any) {
-      handlError(error.response.data.message);
+    } catch (error: unknown) {
+      const errorMessage = handleApiError(error)
+      handlError(errorMessage)
     }
   };
 

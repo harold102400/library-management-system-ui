@@ -8,6 +8,7 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import { useLibrary } from "../../context/LibraryContext";
 import { useEffect } from "react";
 import "../../components/FormFields/FormStyles.css";
+import { handleApiError } from "../../utils/handleApiErrors";
 
 
 export const Edit = () => {
@@ -53,8 +54,9 @@ export const Edit = () => {
       
       await edit(newData, parsedBookId);
       navigate('/books');
-    } catch (error: any) {
-      handlError(error?.response?.data?.message);
+    } catch (error: unknown) {
+      const errorMessage = handleApiError(error)
+      handlError(errorMessage)
     }
   };
   const genreValues = watch("genre");
