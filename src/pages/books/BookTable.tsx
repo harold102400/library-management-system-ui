@@ -1,7 +1,6 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { BookPropType } from "../../types/books/book.type";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { ImStarFull  } from "react-icons/im";
 import { FaCircleInfo } from "react-icons/fa6";
 import { FcAddImage } from "react-icons/fc";
 import { useLibrary } from "../../context/LibraryContext";
@@ -10,6 +9,7 @@ import { Link, useSearchParams} from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { handlError } from "../../components/ErrorAlert/ErrorAlert";
 import { ImageUploaderModal } from "../../components/ImageUploaderModal/ImageUploaderModal";
+import FavoriteButton from "../../components/FavoriteButton/FavoriteButton";
 import "./BookTable.css";
 
 export default function BookTable() {
@@ -21,8 +21,8 @@ export default function BookTable() {
     bookId: string | null;
   } | null>(null);
   const [bookToDelete, setBookToDelete] = useState<BookPropType | null>(null);
-  const { getBooksFromDb, books, deleteBookById, isFavoriteBook } = useLibrary()
-  const myRef = useRef<(HTMLButtonElement | null)[]>([]);
+  const { getBooksFromDb, books, deleteBookById,  } = useLibrary()
+
 
   const [searchParams, setSearchParams] = useSearchParams({
     page: "1",
@@ -69,20 +69,6 @@ export default function BookTable() {
    }
   };
 
-  const handleFavorite = async (bookId: number, index: number): Promise<void> => {
-    const button = myRef.current[index]; 
-
-    if (button) {
-      if (button.classList.contains('btn-favorite-active')) {
-        button.classList.remove('btn-favorite-active');
-        button.classList.add('btn-favorite');
-      } else {
-        button.classList.add('btn-favorite-active');
-        button.classList.remove('btn-favorite');
-      }
-      await isFavoriteBook(bookId);
-    }
-  }
 
   useEffect(() => {
     const page = Number(searchParams.get("page")) || 1;
@@ -156,9 +142,8 @@ export default function BookTable() {
                 <Link to={`/detail/${book.id}`} className="btn-info">
                   <FaCircleInfo />
                 </Link>
-                <button onClick={() =>handleFavorite(Number(book.id), index)} className={`btn-favorite ${book.isFavorite === 1 ? 'btn-favorite-active' : ''}`} ref={(el) => (myRef.current[index] = el)}>
-                  <ImStarFull  />
-                </button>
+                
+                <FavoriteButton book={book} index={index}/>
 
                 <ImageUploaderModal
                   show={activeModal?.type === 'image' && activeModal.bookId === book.id}

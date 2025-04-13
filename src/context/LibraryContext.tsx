@@ -17,8 +17,7 @@ export type LibraryContextValue = {
     edit: (data: BookPropType, id: number) => Promise<void>;
     getOneBook: (id: number) => Promise<BookPropType>;
     deleteBookById: (id: number) => Promise<void>;
-    isFavoriteBook: (id: number) => Promise<void>;
-    favorite: number;
+    isFavoriteBook: (book: BookPropType) => Promise<void>;
     setBooks: Dispatch<SetStateAction<ApiResponseProp<BookPropType[]> | null>>;
 };
 
@@ -29,8 +28,6 @@ export const LibraryProvider = ({ children }: PropsWithChildren) => {
 
     const [books, setBooks] = useState<ApiResponseProp<BookPropType[]> | null>(null);
     const [book, setBook] = useState<BookPropType | null>(null)
-    const [favorite, setFavorite] = useState<number>(0);
-
 
     const getBooksFromDb = async (page:number, limit: number, searchTerm: string = ""): Promise<ApiResponseProp<BookPropType[]>> => {
             const books = await getAllBooks(page, limit, searchTerm);
@@ -49,12 +46,13 @@ export const LibraryProvider = ({ children }: PropsWithChildren) => {
         await editBook(book, bookId)
     } 
 
-    const isFavoriteBook = async (bookId: number) =>{
-        const newFavoriteStatus = favorite === 0 ? 1 : 0;
-        await isFavorite(newFavoriteStatus, bookId)
-        setFavorite(newFavoriteStatus);
-    } 
-
+    const isFavoriteBook = async (book: BookPropType) => {
+        if (!book) return;
+        const newFavoriteStatus = book.isFavorite === 0 ? 1 : 0;
+        await isFavorite(newFavoriteStatus, Number(book.id));
+        setBook({ ...book, isFavorite: book.isFavorite });
+      };
+      
     const deleteBookById = async (id: number): Promise<void> =>{
         await deleteBook(id)
     } 
@@ -67,7 +65,6 @@ export const LibraryProvider = ({ children }: PropsWithChildren) => {
         getOneBook,
         deleteBookById,
         isFavoriteBook,
-        favorite,
         setBooks
     };
 
