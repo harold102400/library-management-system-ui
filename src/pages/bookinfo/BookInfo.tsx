@@ -5,8 +5,8 @@ import { arrayConvertionFn } from "../../utils/arrayConvertionFn";
 import dayjs from "dayjs";
 import relativeTime from 'dayjs/plugin/relativeTime';
 import notCoverImageAvailable from "../../assets/Image_not_available.png";
+import { UPLOADED_IMG_PATH } from "../../config/config";
 import './BookInfo.css'
-
 
 const BookInfo = () => {
 
@@ -55,7 +55,7 @@ const BookInfo = () => {
                         <p className="book_title"><strong>Last time it was updated:</strong> {bookUpdatedTime === null ? bookUpdatedTime : "It has not been updated yet"}</p>
                         <p className="book_title"><strong>Book cover:</strong></p>
                         <img
-                            src={book.coverImage ? `http://localhost/public/images/${book.coverImage}` : notCoverImageAvailable}
+                            src={book.coverImage ? `${UPLOADED_IMG_PATH}/${book.coverImage}` : notCoverImageAvailable}
                             alt="cover image"
                             className="book-cover"
                         />

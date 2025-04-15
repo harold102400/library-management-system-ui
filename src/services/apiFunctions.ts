@@ -1,9 +1,6 @@
 import axios from "axios";
 import { BookPropType, ApiResponseProp } from "../types/books/book.type";
-
-
-const TOKEN_KEY = import.meta.env.VITE_TOKEN_KEY;
-const API_URL = import.meta.env.VITE_API_URL
+import { API_URL, TOKEN_KEY } from "../config/config";
 
 const api = axios.create({
     baseURL: API_URL,

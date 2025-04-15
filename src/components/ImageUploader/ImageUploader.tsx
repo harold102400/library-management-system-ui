@@ -4,8 +4,9 @@ import { useLibrary } from "../../context/LibraryContext";
 import { BookPropType } from "../../types/books/book.type";
 import { handlError } from "../ErrorAlert/ErrorAlert";
 import { successAlert } from "../SuccessAlert/SuccessAlert";
-import "./ImageUploader.css";
 import { handleApiError } from "../../utils/handleApiErrors";
+import { API_URL, UPLOADED_IMG_PATH } from "../../config/config";
+import "./ImageUploader.css";
 
 type ImageUploaderProps = {
   book: BookPropType;
@@ -66,7 +67,7 @@ const ImageUploader = ({ book, onHide }: ImageUploaderProps) => {
 
       // Subir la imagen al endpoint /api/uploadcover
       await axios.post(
-        `http://localhost/api/books/uploadcover`,
+        `${API_URL}/books/uploadcover`,
         imageFormData,
         {
           headers: {
@@ -116,7 +117,7 @@ const ImageUploader = ({ book, onHide }: ImageUploaderProps) => {
               </label>
             </div>
             <img
-              src={`http://localhost/public/images/${book.coverImage}`}
+              src={`${UPLOADED_IMG_PATH}/${book.coverImage}`}
               alt="Imagen de portada actual"
               style={{ maxWidth: "375px" }}
             />
