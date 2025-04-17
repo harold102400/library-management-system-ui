@@ -42,6 +42,8 @@ const BookTable = () => {
     bookId: string | null;
   } | null>(null);
   const [bookToDelete, setBookToDelete] = useState<BookPropType | null>(null);
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -104,6 +106,8 @@ const BookTable = () => {
   }));
 
   const totalPages = Math.ceil(totalCount / limit);
+  const filteredBooks = books?.data?.filter((book) => !showFavoritesOnly || book.isFavorite === 1) || [];
+
 
   return (
     <div className="w-full max-w-6xl mx-auto mt-6">
@@ -113,6 +117,9 @@ const BookTable = () => {
         <Link to={"/create"} className="btn-create">
           Create new book
         </Link>
+          <button className={`btn-export ${showFavoritesOnly ? "bg-yellow-300 text-white" : ""}`} onClick={() => setShowFavoritesOnly((prevState) => !prevState)}>
+            {showFavoritesOnly ? "Show All" : "Show Favorites"}
+          </button>
         </div>
         <TextField
           label="Search books..."
@@ -135,8 +142,8 @@ const BookTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {books && books?.data?.length > 0  ? (
-              books?.data.map((book: BookPropType, index: number) => (
+            {filteredBooks.length > 0  ? (
+              filteredBooks.map((book: BookPropType, index: number) => (
                 <TableRow key={book.id}>
                   <TableCell>{book.id}</TableCell>
                   <TableCell>{book.title}</TableCell>
