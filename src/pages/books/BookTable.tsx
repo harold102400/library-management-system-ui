@@ -1,181 +1,234 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Pagination,
+  Typography,
+  TextField,
+  FormControl,
+  Select,
+  MenuItem,
+  tableCellClasses,
+  styled,
+  SelectChangeEvent,
+} from "@mui/material";
 import { BookPropType } from "../../types/books/book.type";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import { FaCircleInfo } from "react-icons/fa6";
-import { FcAddImage } from "react-icons/fc";
 import { useLibrary } from "../../context/LibraryContext";
-import { VerticallyCenteredModal } from "../../components/VerticallyCenteredModal/VerticallyCenteredModal";
-import { Link, useSearchParams} from "react-router-dom";
-import ReactPaginate from "react-paginate";
-import { handlError } from "../../components/ErrorAlert/ErrorAlert";
 import { ImageUploaderModal } from "../../components/ImageUploaderModal/ImageUploaderModal";
+import { FcAddImage } from "react-icons/fc";
+import { FaCircleInfo, FaTrash } from "react-icons/fa6";
+import { VerticallyCenteredModal } from "../../components/VerticallyCenteredModal/VerticallyCenteredModal";
 import FavoriteButton from "../../components/FavoriteButton/FavoriteButton";
-import "./BookTable.css";
+import { handlError } from "../../components/ErrorAlert/ErrorAlert";
 import { handleApiError } from "../../utils/handleApiErrors";
+import { FaEdit } from "react-icons/fa";
+import "./BookTable.css";
 
-export default function BookTable() {
-
-  const [pageCount, setPageCount] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
+const BookTable = () => {
+  const { getBooksFromDb, books, deleteBookById } = useLibrary();
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [totalCount, setTotalCount] = useState(0);
   const [activeModal, setActiveModal] = useState<{
-    type: 'delete' | 'image' | null;
+    type: "delete" | "image" | null;
     bookId: string | null;
   } | null>(null);
   const [bookToDelete, setBookToDelete] = useState<BookPropType | null>(null);
-  const { getBooksFromDb, books, deleteBookById,  } = useLibrary()
 
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 400);
 
-  const [searchParams, setSearchParams] = useSearchParams({
-    page: "1",
-    limit: "5",
-  });
+    return () => clearTimeout(handler);
+  }, [search]);
 
-  const changePage = ({ selected }: { selected: number }) => {
-    const page = selected + 1; // páginas empiezan desde 0 en ReactPaginate
-    setSearchParams({ page: String(page), limit: "5" });
-    getPaginatedProducts(page, 5);
-  };
-  
-
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
-  
-  const getPaginatedProducts = async (page: number, limit: number, searchProduct: string = "") => {
-    try {
-      const allBooks = await getBooksFromDb(page, limit, searchProduct);
-      setPageCount(Math.ceil(allBooks.totalCount / allBooks.limit));
-      setSearchParams({
-        page: String(allBooks.page),
-        limit: String(allBooks.limit),
-      });
-    } catch (error) {
-      if (error instanceof Error) {
-        // handleError(error.message);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getBooksFromDb(page, limit, debouncedSearch);
+        setTotalCount(result.totalCount);
+      } catch (error) {
+        handlError("Error " + error);
       }
-    } 
+    };
+
+    fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, limit, debouncedSearch]);
+
+  const handleChangePage = (
+    _event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value);
+  };
+
+  const handleLimitChange = (event: SelectChangeEvent<number>) => {
+    setLimit(Number(event.target.value));
+    setPage(1);
   };
 
   const confirmDelete = async () => {
-   try {
-    if (bookToDelete) {
-      await deleteBookById(Number(bookToDelete.id));
-      setActiveModal(null);  
-      setBookToDelete(null); 
-      window.location.reload();
+    try {
+      if (bookToDelete) {
+        await deleteBookById(Number(bookToDelete.id));
+        setActiveModal(null);
+        setBookToDelete(null);
+        window.location.reload();
+      }
+    } catch (error: unknown) {
+      const errorMessage = handleApiError(error);
+      handlError(errorMessage);
     }
-   } catch (error: unknown) {
-    const errorMessage = handleApiError(error)
-    handlError(errorMessage)
-   }
   };
 
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white,
+      fontWeight: 600,
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  }));
 
-  useEffect(() => {
-    const page = Number(searchParams.get("page")) || 1;
-    const limit = Number(searchParams.get("limit")) || 5;
-    getPaginatedProducts(page, limit);
-  }, [searchParams]);
-  
+  const totalPages = Math.ceil(totalCount / limit);
 
-  
-  useEffect(() => {
-    const debounce = setTimeout(() => {
-      const page = Number(searchParams.get("page")) || 1;
-      const limit = Number(searchParams.get("limit")) || 5;
-      getPaginatedProducts(page, limit, searchTerm);
-    }, 300);
-    return () => clearTimeout(debounce);
-  }, [searchTerm, searchParams]);  // Dependencias corregidas
-  
   return (
-    <div className="table_container">
-      <div className="search-container">
+    <div className="w-full max-w-6xl mx-auto mt-6">
+      <div className="flex justify-between items-center mb-4 gap-2 flex-wrap">
+        <Typography variant="h5">Book List</Typography>
+        <div className="flex gap-2">
         <Link to={"/create"} className="btn-create">
           Create new book
         </Link>
-        <input
-          type="text"
-          className="search-input"
-          placeholder="Search books..."
-          value={searchTerm}
-          onChange={handleSearch}
+        </div>
+        <TextField
+          label="Search books..."
+          variant="outlined"
+          size="small"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
-      <table className="table">
-        <thead className="table-dark">
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Title</th>
-            <th scope="col">Author</th>
-            <th scope="col">Year</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {books?.data?.map((book, index) => (
-            <tr key={book.id}>
-              <th>{book.id}</th>
-              <td>{book.title}</td>
-              <td>{book.author}</td>
-              <td>{book.year}</td>
-              <td>
-                <VerticallyCenteredModal
-                  show={activeModal?.type === 'delete' && activeModal.bookId === book.id}
-                  onHide={() => setActiveModal(null)}
-                  onConfirm={confirmDelete}
-                  message="Are you sure you want to delete this book?"
-                />
-                <Link to={`/edit/${book.id}`} className="btn-edit">
-                  <FaEdit />
-                </Link>
-                <button
-                  className="btn-delete"
-                  onClick={() => {
-                    setBookToDelete(book);
-                    setActiveModal({ type: 'delete', bookId: book.id });
-                  }}
-                >
-                  <FaTrash />
-                </button>
+      <TableContainer component={Paper} className="table-wrapper">
+        <Table>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>ID</StyledTableCell>
+              <StyledTableCell>Title</StyledTableCell>
+              <StyledTableCell>Author</StyledTableCell>
+              <StyledTableCell>Year</StyledTableCell>
+              <StyledTableCell>Actions</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {books && books?.data?.length > 0  ? (
+              books?.data.map((book: BookPropType, index: number) => (
+                <TableRow key={book.id}>
+                  <TableCell>{book.id}</TableCell>
+                  <TableCell>{book.title}</TableCell>
+                  <TableCell>{book.author}</TableCell>
+                  <TableCell>{book.year}</TableCell>
+                  <TableCell>
+                    <div className="icons-container">
+                      <VerticallyCenteredModal
+                        show={
+                          activeModal?.type === "delete" &&
+                          activeModal.bookId === book.id
+                        }
+                        onHide={() => setActiveModal(null)}
+                        onConfirm={confirmDelete}
+                        message="Are you sure you want to delete this book?"
+                      />
+                      <Link to={`/edit/${book.id}`} className="btn-edit">
+                        <FaEdit />
+                      </Link>
+                      <button
+                        className="btn-delete"
+                        onClick={() => {
+                          setBookToDelete(book);
+                          setActiveModal({ type: "delete", bookId: book.id });
+                        }}
+                      >
+                        <FaTrash />
+                      </button>
 
-                <Link to={`/detail/${book.id}`} className="btn-info">
-                  <FaCircleInfo />
-                </Link>
-                
-                <FavoriteButton book={book} index={index}/>
+                      <Link to={`/detail/${book.id}`} className="btn-info">
+                        <FaCircleInfo />
+                      </Link>
 
-                <ImageUploaderModal
-                  show={activeModal?.type === 'image' && activeModal.bookId === book.id}
-                  onHide={() => setActiveModal(null)}
-                  book={book}
-                />
+                      <FavoriteButton book={book} index={index} />
 
-                <button
-                  onClick={() => {
-                    setActiveModal({ type: 'image', bookId: book.id });
-                  }}
-                >
-                  <FcAddImage />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <ReactPaginate
-        previousLabel={"Previous"}
-        nextLabel={"Next"}
-        pageCount={pageCount}
-        onPageChange={changePage}
-        containerClassName={"paginationBttns"}
-        previousLinkClassName={"previousBttn"}
-        nextLinkClassName={"nextBttn"}
-        disabledClassName={"paginationDisabled"}
-        activeClassName={"active"}
-      />
+                      <ImageUploaderModal
+                        show={
+                          activeModal?.type === "image" &&
+                          activeModal.bookId === book.id
+                        }
+                        onHide={() => setActiveModal(null)}
+                        book={book}
+                      />
+
+                      <button
+                        onClick={() => {
+                          setActiveModal({ type: "image", bookId: book.id });
+                        }}
+                      >
+                        <FcAddImage />
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  No books found.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <div className="sticky-footer flex justify-between items-center mt-4">
+        <div className="flex items-center gap-2">
+          <span>Rows per page:</span>
+          <FormControl size="small">
+            <Select value={limit} onChange={handleLimitChange} displayEmpty>
+              {[5, 25, 50].map((qty) => (
+                <MenuItem key={qty} value={qty}>
+                  {qty}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+
+        {totalPages > 1 && (
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={handleChangePage}
+            variant="outlined"
+            shape="rounded"
+          />
+        )}
+      </div>
     </div>
   );
-}
+};
+
+export default BookTable;
