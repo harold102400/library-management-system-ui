@@ -6,6 +6,7 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import { useLibrary } from "../../context/LibraryContext";
 import { useEffect } from "react";
 import { handleApiError } from "../../utils/handleApiErrors";
+import { mainGenres } from "../../config/genres.config";
 import "../../components/FormFields/FormStyles.css";
 
 export const Edit = () => {
@@ -137,7 +138,7 @@ export const Edit = () => {
             <div className="form-group">
               <label className="form-label">Genres:</label>
               <div className="checkbox-grid">
-                {["Fantasy", "Adventure", "Science Fiction", "Mystery"].map(
+                {mainGenres.map(
                   (genre, index) => {
                     const checkboxId = `cbx-genre-${index}`;
                     return (
