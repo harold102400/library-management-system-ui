@@ -10,19 +10,24 @@ import { useEffect } from "react";
 import "../../components/FormFields/FormStyles.css";
 import { handleApiError } from "../../utils/handleApiErrors";
 
-
 export const Edit = () => {
   const { edit, book, getOneBook } = useLibrary();
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<BookPropType>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useForm<BookPropType>({
     defaultValues: {
-      title: '',
-      author: '',
-      year: '',
+      title: "",
+      author: "",
+      year: "",
       isFavorite: 0,
-      genre: '[]'
-    }
+      genre: "[]",
+    },
   });
-  const {id} = useParams()
+  const { id } = useParams();
   const parsedBookId = Number(id);
 
   useEffect(() => {
@@ -32,17 +37,16 @@ export const Edit = () => {
   useEffect(() => {
     if (book) {
       setValue("title", book.title);
-    setValue("author", book.author);
-    setValue("year", book.year);
-    setValue("isFavorite", book.isFavorite);
-    setValue("genre", book.genre); 
+      setValue("author", book.author);
+      setValue("year", book.year);
+      setValue("isFavorite", book.isFavorite);
+      setValue("genre", book.genre);
     }
   }, [book, setValue]);
 
   const { authState: user_id } = useAuth();
   const navigate = useNavigate();
   const userId = user_id.user_id;
-
 
   const submitForm = async (data: BookPropType) => {
     try {
@@ -51,12 +55,12 @@ export const Edit = () => {
         genre: JSON.stringify(data.genre),
         user_id: String(userId),
       };
-      
+
       await edit(newData, parsedBookId);
-      navigate('/books');
+      navigate("/books");
     } catch (error: unknown) {
-      const errorMessage = handleApiError(error)
-      handlError(errorMessage)
+      const errorMessage = handleApiError(error);
+      handlError(errorMessage);
     }
   };
   const genreValues = watch("genre");
@@ -76,15 +80,14 @@ export const Edit = () => {
                 setValueAs: (value) => value.trim(),
                 pattern: {
                   value: /^[A-Za-zÀ-ÿ0-9\s.@]+$/,
-                  message: "Title must contain only letters and spaces"
+                  message: "Title must contain only letters and spaces",
                 },
                 maxLength: {
                   value: 200,
-                  message: "Title cannot be longer than 200 characters"
-                }
+                  message: "Title cannot be longer than 200 characters",
+                },
               })}
             />
-            
           </FormField>
 
           <FormField label="Author" error={errors.author?.message}>
@@ -97,12 +100,12 @@ export const Edit = () => {
                 setValueAs: (value) => value.trim(),
                 pattern: {
                   value: /^[A-Za-zÀ-ÿ0-9\s.@]+$/,
-                  message: "Author must contain only letters and spaces"
+                  message: "Author must contain only letters and spaces",
                 },
                 maxLength: {
                   value: 100,
-                  message: "Author cannot be longer than 100 characters"
-                }
+                  message: "Author cannot be longer than 100 characters",
+                },
               })}
             />
           </FormField>
@@ -113,25 +116,39 @@ export const Edit = () => {
               placeholder="Year"
               className="form-input"
               {...register("year", {
-                required: "This field is required and cannot be empty"
+                required: "This field is required and cannot be empty",
               })}
             />
           </FormField>
 
           <div className="categories">
             <p className="categories-header">Categories</p>
-            {["Fantasy", "Adventure", "Science Fiction", "Mystery"].map((genre) => (
-              <div className="checkbox-container" key={genre}>
-                <input
-                  type="checkbox"
-                  className="checkbox-input"
-                  value={genre}
-                  {...register("genre")}
-                  checked={genreValues?.includes(genre)}
-                />
-                <label className="checkbox-label">{genre}</label>
-              </div>
-            ))}
+            {["Fantasy", "Adventure", "Science Fiction", "Mystery"].map(
+              (genre, index) => {
+                const checkboxId = `cbx-genre-${index}`;
+                return (
+                  <div className="checkbox-wrapper-15" key={genre}>
+                    <input
+                      className="inp-cbx"
+                      id={checkboxId}
+                      type="checkbox"
+                      style={{ display: "none" }}
+                      value={genre}
+                      {...register("genre")}
+                      checked={genreValues?.includes(genre)} 
+                    />
+                    <label className="cbx" htmlFor={checkboxId}>
+                      <span>
+                        <svg width="12px" height="9px" viewBox="0 0 12 9">
+                          <polyline points="1 5 4 8 11 1"></polyline>
+                        </svg>
+                      </span>
+                      <span>{genre}</span>
+                    </label>
+                  </div>
+                );
+              }
+            )}
           </div>
 
           {/* <FormField label="Favorite" error={errors.isFavorite?.message}>
@@ -144,10 +161,14 @@ export const Edit = () => {
         </FieldSet>
 
         <FormField>
-          <button type="submit" className="form-button">Edit this book</button>
+          <button type="submit" className="form-button">
+            Edit this book
+          </button>
         </FormField>
         <FormField>
-          <Link to="/books" className="cancel-button">Cancel</Link>
+          <Link to="/books" className="cancel-button">
+            Cancel
+          </Link>
         </FormField>
       </form>
     </div>

@@ -102,17 +102,29 @@ export const Create = () => {
           <div className="categories">
             <p className="categories-header">Categories</p>
             {["Fantasy", "Adventure", "Science Fiction", "Mystery"].map(
-              (genre) => (
-                <div className="checkbox-container" key={genre}>
-                  <input 
-                  type="checkbox"
-                  className="checkbox-input" 
-                  value={genre} 
-                  {...register("genre")} 
-                  />
-                  <label className="checkbox-label">{genre}</label>
-                </div>
-              )
+              (genre, index) => {
+                const checkboxId = `cbx-genre-${index}`;
+                return (
+                  <div className="checkbox-wrapper-15" key={genre}>
+                    <input
+                      className="inp-cbx"
+                      id={checkboxId}
+                      type="checkbox"
+                      style={{ display: "none" }}
+                      value={genre}
+                      {...register("genre")} 
+                    />
+                    <label className="cbx" htmlFor={checkboxId}>
+                      <span>
+                        <svg width="12px" height="9px" viewBox="0 0 12 9">
+                          <polyline points="1 5 4 8 11 1"></polyline>
+                        </svg>
+                      </span>
+                      <span>{genre}</span>
+                    </label>
+                  </div>
+                );
+              }
             )}
           </div>
 
