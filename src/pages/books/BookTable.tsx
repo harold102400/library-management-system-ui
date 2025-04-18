@@ -20,17 +20,12 @@ import {
 } from "@mui/material";
 import { BookPropType } from "../../types/books/book.type";
 import { useLibrary } from "../../context/LibraryContext";
-import { ImageUploaderModal } from "../../components/ImageUploaderModal/ImageUploaderModal";
 import { FcAddImage } from "react-icons/fc";
 import { FaCircleInfo, FaTrash } from "react-icons/fa6";
-import { VerticallyCenteredModal } from "../../components/VerticallyCenteredModal/VerticallyCenteredModal";
-import FavoriteButton from "../../components/FavoriteButton/FavoriteButton";
-import { handlError } from "../../components/ErrorAlert/ErrorAlert";
 import { handleApiError } from "../../utils/handleApiErrors";
 import { FaEdit } from "react-icons/fa";
+import {ImageUploaderModal, VerticallyCenteredModal, FavoriteButton, ExportCVS, ExportPDF, handlError} from "../../components";
 import "./BookTable.css";
-import ExportCVS from "../../components/ExportCVS/ExportCVS";
-import ExportPDF from "../../components/ExportPDF/ExportPDF";
 
 const BookTable = () => {
   const { getBooksFromDb, books, deleteBookById } = useLibrary();
