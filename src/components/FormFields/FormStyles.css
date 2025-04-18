@@ -1,108 +1,103 @@
-.form-container {
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    flex-direction: column;
+    z-index: 300;
   }
   
-  .form {
-    background: #ffffff;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    width: 100%;
+  .modal-container {
+    background-color: white;
+    border-radius: 8px;
+    width: 500px;
+    max-width: 95%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
+  
+  .modal-header-form-title {
+    background-color: #4285f4;
+    color: white;
+    padding: 0px 20px;
+    font-size: 20px;
+    font-weight: 500;
     display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    justify-content: space-between;
+    align-items: center;
   }
   
-  .form-header {
-    font-size: 1.8rem;
-    color: #2c3e50;
-    text-align: center;
-    margin-bottom: 1rem;
+  .close-button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 26px;
+    cursor: pointer;
+    transition: all 1s;
+}
+
+  .close-button:hover {
+    transform: scale(2);
   }
   
-  .form-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  .modal-body {
+    padding: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 12px;
   }
   
   .form-label {
-    font-size: 1rem;
-    font-weight: bold;
-    color: #34495e;
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #222;
   }
   
   .form-input {
-    padding: 0.6rem;
-    border: 1px solid #bdc3c7;
-    border-radius: 5px;
-    font-size: 1rem;
-    color: #2c3e50;
-    outline: none;
-    transition: border-color 0.3s;
-  }
-  
-  .form-input:focus {
-    border-color: #3498db;
-  }
-  
-  .categories {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin: 15px 0;
-  }
-  
-  .categories-header {
     width: 100%;
-    font-weight: bold;
-    color: #34495e;
-    margin-bottom: 0.5rem;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
   }
   
-  .checkbox-container {
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 6px;
+  }
+  
+  .checkbox-item {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
   }
   
   .checkbox-input {
-    width: 20px;
-    height: 20px;
-    accent-color: #3498db; /* Estilo moderno */
-    cursor: pointer;
+    margin-right: 8px;
   }
   
-  .checkbox-label {
-    font-size: 1rem;
-    color: #2c3e50;
+  .actions-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
   }
   
-  .form-button {
-    background-color: #3498db;
-    color: #ffffff;
-    padding: 0.7rem;
+  .cancel-btn {
+    background-color: #6c757d;
+    color: white;
     border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-  }
-  
-  .form-button:hover {
-    background-color: #2980b9;
-    transform: translateY(-2px);
-  }
-  
-  .form-button:active {
-    background-color: #1c5980;
-    transform: translateY(0);
+    font-weight: 500;
   }
   
   .cancel-button {
@@ -110,33 +105,57 @@
     display: block;
     color: #e74c3c;
     font-size: 1rem;
-    font-weight: bold;
+    font-weight: 500;
     text-decoration: none;
-    padding: 0.7rem;
+    padding: 8px 16px;
     border: 2px solid #e74c3c;
-    border-radius: 5px;
-    transition: background-color 0.3s, color 0.3s;
+    border-radius: 4px;
+    -webkit-transition: all 0.35s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+
   }
   
   .cancel-button:hover {
     background-color: #e74c3c;
     color: #ffffff;
-  }
-  
-  .cancel-button:active {
-    background-color: #c0392b;
-  }
-  
-  .error-message {
-    font-size: 0.9rem;
-    color: #e74c3c;
-  }
-  
-  .form-fieldset {
-    border: none;
-    padding: 0;
+    -webkit-transform: translate(5px, 5px);
+    transform: scale(1.05); 
   }
 
+  .cancel-button:active {
+    background-color: #c0392b;
+    transform: scale(0.9);
+
+  }
+
+  .submit-btn {
+    background-color: #3498db;
+    color: #ffffff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+
+  }
+  
+  .submit-btn:hover {
+    background-color: #2980b9;
+    transform: scale(1.05); 
+
+  }
+  
+  .submit-btn:active {
+    background-color: #1c5980;
+    transform: scale(0.9);
+
+  }
+  .link-btn {
+    padding: 0px 12px;
+  }
+  
   .checkbox-wrapper-15 .cbx {
     -webkit-user-select: none;
     user-select: none;
@@ -191,7 +210,7 @@
   .checkbox-wrapper-15 .cbx span:last-child:after {
     content: "";
     position: absolute;
-    top: 8px;
+    top: 50%;
     left: 0;
     height: 1px;
     width: 100%;
@@ -225,27 +244,13 @@
     transition: all 0.3s ease;
   }
 
+  .error-message {
+    font-size: 0.9rem;
+    color: #e74c3c;
+  }
+
   @keyframes check-15 {
     50% {
       transform: scale(1.2);
     }
   }
-  
-  @media (max-width: 480px) {
-    .form {
-      padding: 1.5rem;
-    }
-  
-    .form-header {
-      font-size: 1.5rem;
-    }
-  
-    .form-button {
-      font-size: 0.9rem;
-    }
-  
-    .cancel-button {
-      font-size: 0.9rem;
-    }
-  }
-  
