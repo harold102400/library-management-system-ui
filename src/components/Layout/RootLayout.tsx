@@ -9,7 +9,7 @@ export const RootLayout = () => {
   return (
     <div className="root-layout">
       <header>{userDisplayName && <Header />}</header>
-      <main>
+      <main className='main-layout'>
         <Outlet />
       </main>
     </div>
