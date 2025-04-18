@@ -30,6 +30,7 @@ import { handleApiError } from "../../utils/handleApiErrors";
 import { FaEdit } from "react-icons/fa";
 import "./BookTable.css";
 import ExportCVS from "../../components/ExportCVS/ExportCVS";
+import ExportPDF from "../../components/ExportPDF/ExportPDF";
 
 const BookTable = () => {
   const { getBooksFromDb, books, deleteBookById } = useLibrary();
@@ -122,6 +123,7 @@ const BookTable = () => {
             {showFavoritesOnly ? "Show All" : "Show Favorites"}
           </button>
           <ExportCVS books={books}/>
+          <ExportPDF books={books} />
         </div>
         <TextField
           label="Search books..."
