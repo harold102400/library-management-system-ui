@@ -29,6 +29,7 @@ import { handlError } from "../../components/ErrorAlert/ErrorAlert";
 import { handleApiError } from "../../utils/handleApiErrors";
 import { FaEdit } from "react-icons/fa";
 import "./BookTable.css";
+import ExportCVS from "../../components/ExportCVS/ExportCVS";
 
 const BookTable = () => {
   const { getBooksFromDb, books, deleteBookById } = useLibrary();
@@ -120,6 +121,7 @@ const BookTable = () => {
           <button className={`btn-export ${showFavoritesOnly ? "bg-yellow-300 text-white" : ""}`} onClick={() => setShowFavoritesOnly((prevState) => !prevState)}>
             {showFavoritesOnly ? "Show All" : "Show Favorites"}
           </button>
+          <ExportCVS books={books}/>
         </div>
         <TextField
           label="Search books..."
