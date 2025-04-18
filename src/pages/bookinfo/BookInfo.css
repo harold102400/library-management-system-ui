@@ -20,8 +20,8 @@
   text-align: center;
 }
 .info_text {
-    font-size: 1rem;
-    margin: 0;
+  font-size: 1rem;
+  margin: 0;
 }
 
 .button_title {
@@ -37,10 +37,13 @@
   list-style: none;
   padding: 0;
   margin: 3px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 .genres-list li {
-  display: inline-block;
+  /* display: inline-block; */
   padding: 6px 22px;
   border: 1px solid rgba(0, 0, 0, 0.5);
   border-radius: 20px;
