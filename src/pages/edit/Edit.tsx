@@ -172,7 +172,7 @@ export const Edit = () => {
                 Cancel
               </Link>
               <button type="submit" className="submit-btn">
-                Create new book
+                Edit book
               </button>
             </div>
           </form>
