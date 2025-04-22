@@ -68,7 +68,7 @@ export const Edit = () => {
     <div className="modal-overlay">
       <div className="modal-container">
         <div className="modal-header-form-title">
-          <span>Create book</span>
+          <span>Edit book</span>
           <Link to={"/books"} className="link-btn">
             <button className="close-button">×</button>
           </Link>
