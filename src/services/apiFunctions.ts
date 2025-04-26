@@ -1,27 +1,11 @@
 import axios from "axios";
 import { BookPropType, ApiResponseProp } from "../types/books/book.type";
-import { API_URL, TOKEN_KEY } from "../config/config";
-
-const api = axios.create({
-    baseURL: API_URL,
-});
-
-api.interceptors.request.use((config) => {
-    const token = localStorage.getItem(TOKEN_KEY);
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-        config.headers["Content-Type"] = 'application/json';
-    }
-    return config;
-}, (error) => {
-    return Promise.reject(error);
-});
-
-
+import { API_URL } from "../config/config";
+import api from "../api/api";
 
 export async function getAllBooks(page:number, limit: number, searchTerm: string = ""): Promise<ApiResponseProp<BookPropType[]>> {
     try {
-        const res = await axios.get(`${API_URL}/books?page=${page}&limit=${limit}&search=${searchTerm}`);
+        const res = await api.get(`${API_URL}/books?page=${page}&limit=${limit}&search=${searchTerm}`);
         return res.data
     } catch (error) {
         return Promise.reject(error);
@@ -30,7 +14,7 @@ export async function getAllBooks(page:number, limit: number, searchTerm: string
 
 export async function getBook(id: number): Promise<BookPropType> {
     try {
-        const res = await axios.get(`${API_URL}/books/${id}`);
+        const res = await api.get(`${API_URL}/books/${id}`);
         return res.data
     } catch (error) {
         return Promise.reject(error);
