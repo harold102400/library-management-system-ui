@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
 import { createBook } from "../../services/apiFunctions";
 import { BookPropType } from "../../types/books/book.type";
-import { useAuth } from "../../context/UserContext";
 import { handlError } from "../../components/ErrorAlert/ErrorAlert";
 import { useNavigate, Link } from "react-router-dom";
 import { handleApiError } from "../../utils/handleApiErrors";
 import { mainGenres } from "../../config/genres.config";
+import Cookies from 'js-cookie';
 import "../../components/FormFields/FormStyles.css";
 
 export const Create = () => {
@@ -22,9 +22,8 @@ export const Create = () => {
       genre: "[]",
     },
   });
-  const { authState: user_id } = useAuth();
   const navigate = useNavigate();
-  const id = user_id.user_id;
+  const id = Cookies.get("user_id");
 
   const submitForm = async (data: BookPropType) => {
     try {

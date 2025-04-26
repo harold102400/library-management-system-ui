@@ -4,18 +4,17 @@ import { PrivateRoutes } from '../private/PrivateRoutes';
 import { RoutesWithNotFound } from '../notfound/RoutesWithNotFound';
 import  Login  from '../../pages/login/Login';
 import  Register  from '../../pages/register/Register';
-
+import Cookies from 'js-cookie';
 
 
 export const PublicRoutes = () => {
-
-    const username = localStorage.getItem("userDisplayName");
+    const userName = Cookies.get("username");
 
     return (
             <RoutesWithNotFound>
 
-                <Route path="/" element={username ? <Navigate to="/books" replace /> : <Navigate to="/login" />} />
-                <Route path="/login" element={username ? <Navigate to="/books" replace /> : <Login />} />
+                <Route path="/" element={userName ? <Navigate to="/books" replace /> : <Navigate to="/login" />} />
+                <Route path="/login" element={userName ? <Navigate to="/books" replace /> : <Login />} />
                 <Route path="/register" element={<Register />} />
 
                 <Route element={<PrivateGuard />}>

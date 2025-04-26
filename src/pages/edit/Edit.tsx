@@ -1,12 +1,12 @@
 import { useForm } from "react-hook-form";
 import { BookPropType } from "../../types/books/book.type";
-import { useAuth } from "../../context/UserContext";
 import { handlError } from "../../components/ErrorAlert/ErrorAlert";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { useLibrary } from "../../context/LibraryContext";
 import { useEffect } from "react";
 import { handleApiError } from "../../utils/handleApiErrors";
 import { mainGenres } from "../../config/genres.config";
+import Cookies from 'js-cookie';
 import "../../components/FormFields/FormStyles.css";
 
 export const Edit = () => {
@@ -43,9 +43,8 @@ export const Edit = () => {
     }
   }, [book, setValue]);
 
-  const { authState: user_id } = useAuth();
   const navigate = useNavigate();
-  const userId = user_id.user_id;
+  const userId = Cookies.get("user_id");
 
   const submitForm = async (data: BookPropType) => {
     try {
