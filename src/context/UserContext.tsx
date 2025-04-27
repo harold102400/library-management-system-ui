@@ -29,12 +29,14 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
     const [authState, setAuthState] = useState<UserContextValue["authState"]>({authenticated: null});
 
     useEffect(() => {
-      setInterval(() => {
+      const intervalHandler = setInterval(() => {
         const fetchUser = async () => {
           await api.get(`${API_URL}/auth/checksession`);
         };
         fetchUser();
       }, 3600000);
+
+      return () => clearInterval(intervalHandler) 
     }, []);
 
 
