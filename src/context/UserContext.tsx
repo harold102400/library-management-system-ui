@@ -5,102 +5,52 @@ import {
     useEffect,
     useState,
 } from "react";
-import axios from "axios";
 import { registerUser } from "../services/apiFunctions";
-import { API_URL, TOKEN_KEY } from "../config/config";
+import { API_URL } from "../config/config";
+import api from "../api/api";
+
 
 export type UserContextValue = {
     onLogin: (input: string, password: string) => Promise<void>;
-    onLogout: () => void;
+    onLogout: () => Promise<void>;
     registerNewUser: (username: string, email: string, password: string) => Promise<void>;
-    authState: {
-        token: string | null;
-        authenticated: boolean | null;
-        user_id: string | null;
-        username: string | null;
-    };
+    authState: { authenticated: boolean | null };
 };
 
 
 export const UserContext = createContext<UserContextValue>({
     onLogin: async () => { },
-    onLogout: () => { },
+    onLogout: async () => { },
     registerNewUser: async() => { },
-    authState: {
-        token: null,
-        authenticated: null,
-        user_id: null,
-        username: null,
-    },
+    authState: {authenticated: null}
 });
 
 export const UserProvider = ({ children }: PropsWithChildren) => {
-    const [authState, setAuthState] = useState<UserContextValue["authState"]>({
-        token: null,
-        authenticated: null,
-        user_id: null,
-        username: null,
-    });
+    const [authState, setAuthState] = useState<UserContextValue["authState"]>({authenticated: null});
 
     useEffect(() => {
-        const loadToken = () => {
-            const token = localStorage.getItem(TOKEN_KEY);
-            const user_id = localStorage.getItem("user_id");
-            const username = localStorage.getItem("userDisplayName");
-            if (token) {
-                setAuthState({
-                    token,
-                    authenticated: true,
-                    user_id,
-                    username,
-                });
-                axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-            } else {
-                setAuthState({
-                    token: null,
-                    authenticated: false,
-                    user_id: null,
-                    username: null,
-                });
-            }
+      setInterval(() => {
+        const fetchUser = async () => {
+          await api.get(`${API_URL}/auth/checksession`);
         };
-        loadToken();
+        fetchUser();
+      }, 3600000);
     }, []);
 
-    const login = async (input: string, password: string): Promise<void> => {
 
+    const login = async (input: string, password: string): Promise<void> => {
         const isEmail = /\S+@\S+\.\S+/.test(input);
 
         const loginData = isEmail ? { email: input, password } : { username: input, password }
 
-        const { data: response } = await axios.post(`${API_URL}/auth`, loginData);
+        await api.post(`${API_URL}/auth`, loginData);
 
-        setAuthState({
-            token: response.token,
-            authenticated: true,
-            user_id: response.user_id,
-            username: response.display_name,
-        });
-
-        axios.defaults.headers.post["Authorization"] = `Bearer ${response.token}`;
-        localStorage.setItem(TOKEN_KEY, response.token);
-        localStorage.setItem("user_id", response.user_id);
-        localStorage.setItem("userDisplayName", response.display_name);
-
-        return response;
+        setAuthState({authenticated: true});
     };
 
-    const logout = () => {
-        localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem("user_id");
-        localStorage.removeItem("userDisplayName");
-        axios.defaults.headers.common["Authorization"] = "";
-        setAuthState({
-            token: null,
-            authenticated: false,
-            user_id: null,
-            username: null,
-        });
+    const logout = async () => {
+        setAuthState({authenticated: false});
+        await api.get(`${API_URL}/auth/endsession`);
     };
 
     const registerNewUser = async (username: string, email: string, password: string): Promise<void> => {
