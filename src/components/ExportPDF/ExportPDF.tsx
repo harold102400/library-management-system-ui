@@ -9,7 +9,6 @@ type exportPDFProp = {
 
 const ExportPDF = ({ books }: exportPDFProp) => {
   const downloadPDF = async () => {
-    console.log(books?.data);
     if (!books?.data) {
       handlError("An error has occurred, please try again later!");
     }

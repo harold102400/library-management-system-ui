@@ -26,7 +26,6 @@ const ExportCVS = ({ books, fileName = "Report" }: exportCVSProp) => {
             const title = removeAccents(book.title);
             const author = removeAccents(book.author);
             const genres = `"${JSON.parse(book.genre).join(", ")}"`;
-            console.log(typeof genres)
       
             return [
               book.id,
