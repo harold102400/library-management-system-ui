@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { useLibrary } from "../../context/LibraryContext";
 import { BookPropType } from "../../types/books/book.type";
@@ -6,6 +5,7 @@ import { handlError } from "../ErrorAlert/ErrorAlert";
 import { successAlert } from "../SuccessAlert/SuccessAlert";
 import { handleApiError } from "../../utils/handleApiErrors";
 import { API_URL, UPLOADED_IMG_PATH } from "../../config/config";
+import api from "../../api/api";
 import "./ImageUploader.css";
 
 type ImageUploaderProps = {
@@ -48,17 +48,33 @@ const ImageUploader = ({ book, onHide }: ImageUploaderProps) => {
   };
 
   const handleClick = () => {
-    if (!file) {
-      return;
+    if (!file) return handlError("You did not select any image...try again!");
+  };
+
+  const handleDeleteImage = async () => {
+    if (!book.coverImage) {
+      return handlError("Please select the content before deleting!");
     }
-    onHide();
+
+    try {
+      await api.delete(`${API_URL}/books/deleteimage/${book.id}`);
+      const updatedBookResponse = await getOneBook(Number(book.id));
+
+      //se agrega al estado para que react renderice la pagina con la nueva imagen
+      handleImage(updatedBookResponse);
+      onHide();
+      successAlert("The image has been deleted successfully!");
+    } catch (error) {
+      const errorMessage = handleApiError(error);
+      handlError(errorMessage);
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     // Si no se ha seleccionado imagen no se puede enviar el form
-    if (!file) return handlError("You did not select any image...try again!");
+    if (!file) return;
 
     try {
       const imageFormData = new FormData();
@@ -66,26 +82,22 @@ const ImageUploader = ({ book, onHide }: ImageUploaderProps) => {
       imageFormData.append("bookId", book.id);
 
       // Subir la imagen al endpoint /api/uploadcover
-      await axios.post(
-        `${API_URL}/books/uploadcover`,
-        imageFormData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await api.post(`${API_URL}/books/uploadcover`, imageFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       //se obtiene del contexto el libro con la imagen actualizada
       const updatedBookResponse = await getOneBook(Number(book.id));
 
       //se agrega al estado para react renderice la pagina con la nueva imagen
-      handleImage({ ...book, coverImage: updatedBookResponse.coverImage });
-
+      handleImage(updatedBookResponse);
+      onHide();
       successAlert("The new image has been saved successfully!");
     } catch (error: unknown) {
-      const errorMessage = handleApiError(error)
-      handlError(errorMessage)
+      const errorMessage = handleApiError(error);
+      handlError(errorMessage);
     }
   };
 
@@ -150,13 +162,22 @@ const ImageUploader = ({ book, onHide }: ImageUploaderProps) => {
         </label>
       </div>
 
-      <button
-        type="submit"
-        className="coverimage-submit-button"
-        onClick={handleClick}
-      >
-        Save changes
-      </button>
+      <div className="flex gap-4">
+        <button
+          type="submit"
+          className="coverimage-button"
+          onClick={handleClick}
+        >
+          Save changes
+        </button>
+        <button
+          type="submit"
+          className="coverimage-delete-button"
+          onClick={handleDeleteImage}
+        >
+          Delete image
+        </button>
+      </div>
     </form>
   );
 };
