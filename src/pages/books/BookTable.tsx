@@ -28,7 +28,10 @@ import {ImageUploaderModal, VerticallyCenteredModal, FavoriteButton, ExportCVS, 
 import "./BookTable.css";
 
 const BookTable = () => {
+  //context
   const { getBooksFromDb, books, deleteBookById } = useLibrary();
+
+  //states
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState("");
@@ -41,7 +44,7 @@ const BookTable = () => {
   const [bookToDelete, setBookToDelete] = useState<BookPropType | null>(null);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
-
+//efects
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
@@ -73,6 +76,7 @@ const BookTable = () => {
   };
 
   const handleLimitChange = (event: SelectChangeEvent<number>) => {
+    console.log(Number(event.target.value))
     setLimit(Number(event.target.value));
     setPage(1);
   };
@@ -102,7 +106,14 @@ const BookTable = () => {
     },
   }));
 
+  // para sacar la cantidad de pagina se divide cantidad de items entre el limite y eso da la cantidad de paginas
   const totalPages = Math.ceil(totalCount / limit);
+  
+  /* 
+    showFavoritesOnly es falso por defecto y como se usa el operador de negacion ! se vuelve true y filtra todos los libros
+    y cuando se le da al buton se pone true pero con el operador de negacion ! se vuelve false entonces va a la siguiente condicion 
+    y filtra todos los libros favoritos.
+  */
   const filteredBooks = books?.data?.filter((book) => !showFavoritesOnly || book.isFavorite === 1) || [];
 
 
@@ -114,6 +125,8 @@ const BookTable = () => {
         <Link to={"/create"} className="btn-create">
           Create new book
         </Link>
+        {/* Cuando le das click a el btn show favorites busca el ultima estado de showFavoritesOnly y le cambia el valor a su opuesto si es true, lo pone en false. 
+            y si es false, lo pone en true. */}
           <button className={`btn-export ${showFavoritesOnly ? "bg-yellow-300 text-white" : ""}`} onClick={() => setShowFavoritesOnly((prevState) => !prevState)}>
             {showFavoritesOnly ? "Show All" : "Show Favorites"}
           </button>
@@ -213,7 +226,7 @@ const BookTable = () => {
         <div className="flex items-center gap-2">
           <span>Rows per page:</span>
           <FormControl size="small">
-            <Select value={limit} onChange={handleLimitChange} displayEmpty>
+            <Select value={limit} onChange={handleLimitChange}>
               {[5, 25, 50].map((qty) => (
                 <MenuItem key={qty} value={qty}>
                   {qty}
