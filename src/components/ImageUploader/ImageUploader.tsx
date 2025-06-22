@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useLibrary } from "../../context/LibraryContext";
 import { BookPropType } from "../../types/books/book.type";
 import { handlError } from "../ErrorAlert/ErrorAlert";
 import { successAlert } from "../SuccessAlert/SuccessAlert";
@@ -11,10 +10,10 @@ import "./ImageUploader.css";
 type ImageUploaderProps = {
   book: BookPropType;
   onHide: () => void;
+  reRenderBooks: () => Promise<void>
 };
 
-const ImageUploader = ({ book, onHide }: ImageUploaderProps) => {
-  const { setBooks, getOneBook } = useLibrary();
+const ImageUploader = ({ book, onHide, reRenderBooks }: ImageUploaderProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null); // Estado para la previsualización
 
@@ -30,22 +29,22 @@ const ImageUploader = ({ book, onHide }: ImageUploaderProps) => {
     }
   };
 
-  const handleImage = (book: BookPropType) => {
-    setBooks((prevBooks) => {
-      // Verificamos si prevBooks es null
-      if (prevBooks === null) {
-        return null; // Si no hay libros, simplemente devolvemos null.
-      }
-      const updatedBooks = prevBooks.data.map((prevBook) => {
-        return prevBook.id === book.id
-          ? { ...prevBook, coverImage: book.coverImage }
-          : prevBook;
-      });
+  // const handleImage = (book: BookPropType) => {
+  //   setBooks((prevBooks) => {
+  //     // Verificamos si prevBooks es null
+  //     if (prevBooks === null) {
+  //       return null; // Si no hay libros, simplemente devolvemos null.
+  //     }
+  //     const updatedBooks = prevBooks.data.map((prevBook) => {
+  //       return prevBook.id === book.id
+  //         ? { ...prevBook, coverImage: book.coverImage }
+  //         : prevBook;
+  //     });
 
-      // Devolvemos el nuevo objeto ApiResponseProp con el array actualizado
-      return { ...prevBooks, data: updatedBooks };
-    });
-  };
+  //     // Devolvemos el nuevo objeto ApiResponseProp con el array actualizado
+  //     return { ...prevBooks, data: updatedBooks };
+  //   });
+  // };
 
   const handleClick = () => {
     if (!file) return handlError("You did not select any image...try again!");
@@ -55,13 +54,9 @@ const ImageUploader = ({ book, onHide }: ImageUploaderProps) => {
     if (!book.coverImage) {
       return handlError("Please select the content before deleting!");
     }
-
     try {
       await api.delete(`${API_URL}/books/deleteimage/${book.id}`);
-      const updatedBookResponse = await getOneBook(Number(book.id));
-
-      //se agrega al estado para que react renderice la pagina con la nueva imagen
-      handleImage(updatedBookResponse);
+      reRenderBooks()
       onHide();
       successAlert("The image has been deleted successfully!");
     } catch (error) {
@@ -88,11 +83,7 @@ const ImageUploader = ({ book, onHide }: ImageUploaderProps) => {
         },
       });
 
-      //se obtiene del contexto el libro con la imagen actualizada
-      const updatedBookResponse = await getOneBook(Number(book.id));
-
-      //se agrega al estado para react renderice la pagina con la nueva imagen
-      handleImage(updatedBookResponse);
+      reRenderBooks();
       onHide();
       successAlert("The new image has been saved successfully!");
     } catch (error: unknown) {

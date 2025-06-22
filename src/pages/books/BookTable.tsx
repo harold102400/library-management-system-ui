@@ -194,7 +194,7 @@ const BookTable = () => {
                         <FaCircleInfo />
                       </Link>
 
-                      <FavoriteButton book={book} index={index} />
+                      <FavoriteButton book={book} index={index} reRenderBooks={reRenderBooks}/>
 
                       <ImageUploaderModal
                         show={
@@ -203,6 +203,7 @@ const BookTable = () => {
                         }
                         onHide={() => setActiveModal(null)}
                         book={book}
+                        reRenderBooks={reRenderBooks}
                       />
 
                       <button

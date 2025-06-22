@@ -7,9 +7,10 @@ type ImageUploaderModalProps = {
     show: boolean; 
     onHide: () => void;
     book: BookPropType;
+    reRenderBooks: () => Promise<void>
 }
 
-export function ImageUploaderModal({ show, onHide, book }: ImageUploaderModalProps) {
+export function ImageUploaderModal({ show, onHide, book, reRenderBooks }: ImageUploaderModalProps) {
   return (
     <Modal
       show={show}
@@ -21,7 +22,7 @@ export function ImageUploaderModal({ show, onHide, book }: ImageUploaderModalPro
       <Modal.Header closeButton className="custom-modal-header">
       </Modal.Header>
       <Modal.Body>
-        <ImageUploader book={book} onHide={onHide}/>
+        <ImageUploader book={book} onHide={onHide} reRenderBooks={reRenderBooks}/>
       </Modal.Body>
     </Modal>
   );

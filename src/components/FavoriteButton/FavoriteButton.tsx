@@ -6,26 +6,13 @@ import { ImStarFull } from "react-icons/im";
 type FavoriteButtonProps = {
   book: BookPropType;
   index: number;
+  reRenderBooks: () => Promise<void>
 };
 
-const FavoriteButton = ({ book, index }: FavoriteButtonProps) => {
-  const { isFavoriteBook, getOneBook, setBooks } = useLibrary();
+const FavoriteButton = ({ book, index, reRenderBooks }: FavoriteButtonProps) => {
+  const { isFavoriteBook } = useLibrary();
 
   const myRef = useRef<(HTMLButtonElement | null)[]>([]);
-
-  const handleFavoriteState = (book: BookPropType) => {
-    setBooks((prevBooks) => {
-      if (prevBooks === null) {
-        return null; 
-      }
-      const updatedBooks = prevBooks.data.map((prevBook) => {
-        return prevBook.id === book.id
-          ? { ...prevBook, isFavorite: book.isFavorite }
-          : prevBook;
-      });
-      return { ...prevBooks, data: updatedBooks };
-    });
-  };
 
   const handleFavorite = async (index: number): Promise<void> => {
     const button = myRef.current[index];
@@ -39,15 +26,7 @@ const FavoriteButton = ({ book, index }: FavoriteButtonProps) => {
         button.classList.remove("btn-favorite");
       }
       await isFavoriteBook(book);
-
-      //se obtiene del contexto el libro con el dato actualizado
-      const updatedBookResponse = await getOneBook(Number(book.id));
-
-      //se agrega al estado para react renderice la pagina con el nuevo cambio
-      handleFavoriteState({
-        ...book,
-        isFavorite: updatedBookResponse.isFavorite,
-      });
+      reRenderBooks()
     }
   };
 
