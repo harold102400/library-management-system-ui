@@ -68,6 +68,11 @@ const BookTable = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, limit, debouncedSearch]);
 
+  // Funcion creada para hacer un fetch de los books cuando se actualice un valor de los mismos y actualizar el ui con el ultimo cambio sin recargar la pagina
+  const reRenderBooks = async () => {
+    await getBooksFromDb(page, limit);
+  }
+
   const handleChangePage = (
     _event: React.ChangeEvent<unknown>,
     value: number
